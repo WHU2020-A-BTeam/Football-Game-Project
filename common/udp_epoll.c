@@ -25,7 +25,7 @@ int udp_accept(int fd, struct User *user){
     ret = recvfrom(fd, (void *)&request, sizeof(request), 0, (struct sockaddr *)&client, &len);
     
     if (ret != sizeof(request)){
-        response.type = 1;
+        response.Type = 1;
         strcpy(response.msg, "Login failed with Data errors!");
         sendto(fd, (void *)&response, sizeof(response), 0, (struct sockaddr *)&client, len);
         return -1;   
@@ -40,7 +40,7 @@ int udp_accept(int fd, struct User *user){
     user->team = request.team;
     user->fd = new_fd;
    
-    response.type = 0;
+    response.Type = 0;
     strcpy(response.msg, "Login Success, Enjoy Yourself");
     send(new_fd, (void *)&response, sizeof(response), 0);
     
