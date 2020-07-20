@@ -16,7 +16,7 @@ struct Point {
 
 struct User{
     int team;//0 RED 1 BLUE
-    int fd //玩家对应的链接
+    int fd; //玩家对应的链接
     char name[20];
     int online;//1 在线 0 不在线
     struct Point loc;

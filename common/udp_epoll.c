@@ -1,8 +1,13 @@
+#include"udp_epoll.h"
 void add_event_ptr(int epollfd, int fd, int events, struct User *user){
 	struct epoll_event ev;
-	ev.events = EPOLLIN;
-	ev.data.fd = fd;
-	epoll_ctl(epollfd, EPOLL_CTL_ADD, fd, &ev) < 0;
+	ev.events = events;
+	ev.data.ptr = user ;
+    if( epoll_ctl(epollfd, EPOLL_CTL_ADD, fd, &ev)  < 0)
+    {
+        perror("epoll ctl ");
+        exit(1);
+    }
 	return;
 }
 

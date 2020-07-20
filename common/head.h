@@ -38,4 +38,6 @@
 #include <sys/epoll.h>
 #include "common.h"
 
+#include"./datatype.h"
+#include"./udp_epoll.h"
 #endif
