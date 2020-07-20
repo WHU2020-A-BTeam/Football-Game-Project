@@ -10,7 +10,7 @@ extern char conf_ans[512];
 
 char *get_conf_value(const char *path, const char *key){
 	FILE *fp =NULL;
-	if(strcmp(key, "NAME") != 0 && strcmp(key, "TEAM") != 0 && strcmp(key, "SERVERIP") != 0 && strcmp(key, "SERVERPORT") != 0 && strcmp(key, "LOGMSG") != 0){
+	if(strcmp(key, "PORT") != 0 && strcmp(key, "NAME") != 0 && strcmp(key, "TEAM") != 0 && strcmp(key, "SERVERIP") != 0 && strcmp(key, "SERVERPORT") != 0 && strcmp(key, "LOGMSG") != 0){
 		printf("illegal key!\n");
 		return NULL;
 	}

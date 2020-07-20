@@ -21,6 +21,7 @@ int main(int argc, char **argv){
 		perror("get_conf_value()");
 		exit(1);
 	}
+	printf("%s\n", str);
 	if(!port) port = atoi(str);
 
 	if((listener = socket_create_udp(port)) < 0){
