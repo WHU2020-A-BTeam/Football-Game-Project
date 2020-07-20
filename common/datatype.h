@@ -19,6 +19,7 @@ struct User{
     int fd; //玩家对应的链接
     char name[20];
     int online;//1 在线 0 不在线
+    int flag; //未响应次数
     struct Point loc;
 };
 
