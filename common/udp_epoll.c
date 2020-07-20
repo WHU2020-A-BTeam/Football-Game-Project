@@ -1,8 +1,11 @@
+#include "head.h"
+
 void add_event_ptr(int epollfd, int fd, int events, struct User *user){
 	struct epoll_event ev;
-	ev.events = EPOLLIN;
+	ev.events = events;
 	ev.data.fd = fd;
-	epoll_ctl(epollfd, EPOLL_CTL_ADD, fd, &ev) < 0;
+	epoll_ctl(epollfd, EPOLL_CTL_ADD, fd, &ev);
+	ev.data.ptr = user;
 	return;
 }
 
@@ -26,3 +29,6 @@ int udp_connect(struct sockaddr_in *client){
 	return sockfd;
 }
 
+int udp_accept(int fd, struct User *user){
+	return -1;
+}
