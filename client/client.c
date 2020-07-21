@@ -86,13 +86,13 @@ int main(int argc, char **argv){
                                             connect(sockfd, (struct sockaddr *)&server, len);
                                             printf("%d\n",sockfd);
                                                 char buff[512] = {0}; 
-                          //          while (1) {
+                                    while (1) {
                                                            bzero(buff, sizeof(buff));
                                                            scanf("%s", buff);
                                                            getchar();
                                                            send(sockfd, buff, strlen(buff), 0);
                                                        
-                            //                   }
+                                              }
                                                return 0;
 
 }

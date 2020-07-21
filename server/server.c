@@ -67,22 +67,24 @@ int main(int argc, char **argv){
                     
         }  printf("%d\n",nfds);
         for(int i = 0; i < nfds; i++){
-                        struct User user;
-                        bzero(&user, sizeof(user));
             if( ((struct User*)events[i].data.ptr )->fd == listener) {
-            //printf("zzq\n");
-                                int new_fd = udp_accept(listener, &user);
+                        //printf("zzq\n");
+                        struct User *user; user =(struct User*)malloc(sizeof(struct User));
+                        bzero(user, sizeof(user));
+                                int new_fd = udp_accept(listener, user);
+
                 if(new_fd > 0){
-                                        printf("New Connection!\n");
-                                user.fd = new_fd;
-                                add_event_ptr(epollfd,new_fd,EPOLLIN,&user);
+                                        printf("New Connection!%d  \n",new_fd);
+                                user->fd = new_fd;
+                                add_event_ptr(epollfd,new_fd,EPOLLIN,user);
                  }
             }else{
                 if(events[i].events & EPOLLIN){
                     char buff[512]={0};
                     recv(((struct User*)events[i].data.ptr)->fd,buff,sizeof(buff),0);
-                    sleep(3);
-                   printf("**%d**\n", ((struct User*)events[i].data.ptr)->fd);
+                   // sleep(3);
+                   //printf("**%d**\n", ((struct User*)events[i].data.ptr)->fd);
+                   printf("recv: %s**\n",buff );
                    // send(((struct User*)events[i].data.ptr)->fd,buff,strlen(buff),0);
                 }
             }
