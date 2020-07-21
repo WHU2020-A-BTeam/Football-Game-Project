@@ -26,19 +26,19 @@ char *get_conf_value(const char *path, const char *key){
 	memset(conf_ans, '\0', sizeof(conf_ans));
 	while((read = getline(&line, &size, fp)) != -1){
 		if(strstr(line, key) != NULL){
-			//for(int i = 0; i < read; i++){
-			//	if(line[i] == '='){
-			//		strncpy(conf_ans, line + i + 1, read - i - 2);
-			//		conf_ans[read - i - 2] = '\0';
-			//		break;
-			//	}
-			//}
-            if(find_key[strlen(key)] == '=') {
+			for(int i = 0; i < read; i++){
+				if(line[i] == '='){
+					strncpy(conf_ans, line + i + 1, read - i - 2);
+					conf_ans[read - i - 2] = '\0';
+					break;
+				}
+			}
+            /*if(find_key[strlen(key)] == '=') {
                 strncpy(conf_ans, find_key + strlen(key) + 1, 100);
                 free(line);
                 line = NULL;
                 break;   
-            }
+            }*/
 
 		}
 		free(line);
@@ -47,17 +47,21 @@ char *get_conf_value(const char *path, const char *key){
 	return conf_ans;
 }
 
+
 int socket_create_udp(int port){
 	int listener;
 	if ((listener = socket(AF_INET, SOCK_DGRAM, 0)) < 0){
+		printf("listen error\n");
 		return -1;
 	}
 	struct sockaddr_in server;
 	server.sin_family = AF_INET;
 	server.sin_addr.s_addr = htonl(INADDR_ANY);
 	server.sin_port = htons(port);
-
+	unsigned long opt = 1;
+	setsockopt(listener, SOL_SOCKET, SO_REUSEADDR, &opt, sizeof(opt));
 	if(bind(listener, (struct sockaddr *)&server, sizeof(server)) < 0){
+		printf("listen eeeee\n");
 		return -1;
 	}
 	return listener;

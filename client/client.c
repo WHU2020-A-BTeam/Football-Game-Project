@@ -1,4 +1,5 @@
 #include "head.h"
+pthread_mutex_t bmutex, rmutex;
 int server_port = 0;
 char server_ip[20] = {0};
 int team = -1;
@@ -53,6 +54,7 @@ int main(int argc, char **argv){
 	}
 	
 	sendto(sockfd, (void *)&request, sizeof(request), 0, (struct sockaddr *)&server, len);
+	printf("send success!\n");
 	fd_set set;
 	FD_ZERO(&set);
 	FD_SET(sockfd, &set);
@@ -71,11 +73,21 @@ int main(int argc, char **argv){
 			exit(1);
 		}
 	}
-	else {
+	if (retval == 0) {
 		printf("The Game Server is out of service!.\n");
 		exit(1);
 	}
 	printf("Server : %s\n", response.msg);
 	connect(sockfd, (struct sockaddr *)&server, len);
+	while(1){
+		char buff[512] = {0};
+		scanf("%[^\n]s", buff);
+		getchar();
+		send(sockfd, buff, strlen(buff), 0);
+		printf("Send : %s\n" , buff);
+		bzero(buff, sizeof(buff));
+		recv(sockfd, buff, sizeof(buff), 0);
+		printf("Server : %s\n", buff);
+	}
 	return 0;
 }
