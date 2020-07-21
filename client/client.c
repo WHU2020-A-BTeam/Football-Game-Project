@@ -56,7 +56,7 @@ int main(int argc, char **argv){
 
 	socklen_t len = sizeof(server);
 	
-	initfootball();
+	//initfootball();
 
 	if((sockfd = socket_udp()) < 0){
 		perror("socket_udp()");
