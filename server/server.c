@@ -7,7 +7,8 @@ char *conf = "./footballd.conf";
 
 int main(int argc, char **argv){
         int opt, listener, epollfd;
-        pthread_t red_t, blue_t;
+    pthread_t red_t, blue_t;
+    /*
     while((opt = getopt(argc, argv, "p:")) != -1){
         switch (opt) {
                         case 'p':
@@ -19,7 +20,10 @@ int main(int argc, char **argv){
                     
         }
             
-    }
+    } */ 
+    
+
+//    printf("\n\ntttt\n");
         char *str = get_conf_value(conf,"PORT");
     if(str == NULL){
                 perror("get_conf_value()");
@@ -27,7 +31,7 @@ int main(int argc, char **argv){
             
     }
         if(!port) port = atoi(str);
-
+         //   printf("%d\n",port);
     if((listener = socket_create_udp(port)) < 0){
                 perror("socket_create_udp()");
                 exit(1);
@@ -55,16 +59,18 @@ int main(int argc, char **argv){
             struct User *zzq;
           //  zzq.fd=0;
     while(1){
-                int nfds = epoll_wait(epollfd, events, MAX, -1);
+                int nfds = epoll_wait(epollfd, events, MAX,-1 );
+       // printf("zqzqzq");
         if(nfds < 0) {
                         perror("epoll_wait()");
                         exit(1);
                     
-        }
+        }  printf("%d\n",nfds);
         for(int i = 0; i < nfds; i++){
                         struct User user;
                         bzero(&user, sizeof(user));
             if( ((struct User*)events[i].data.ptr )->fd == listener) {
+            //printf("zzq\n");
                                 int new_fd = udp_accept(listener, &user);
                 if(new_fd > 0){
                                         printf("New Connection!\n");
@@ -75,8 +81,9 @@ int main(int argc, char **argv){
                 if(events[i].events & EPOLLIN){
                     char buff[512]={0};
                     recv(((struct User*)events[i].data.ptr)->fd,buff,sizeof(buff),0);
-                    printf("Recv : %s", buff);
-                    send(((struct User*)events[i].data.ptr)->fd,buff,strlen(buff),0);
+                    sleep(3);
+                   printf("**%d**\n", ((struct User*)events[i].data.ptr)->fd);
+                   // send(((struct User*)events[i].data.ptr)->fd,buff,strlen(buff),0);
                 }
             }
                     

@@ -10,7 +10,7 @@ extern char conf_ans[512];
 
 char *get_conf_value(const char *path, const char *key){
 	FILE *fp =NULL;
-	if(strcmp(key, "NAME") != 0 && strcmp(key, "TEAM") != 0 && strcmp(key, "SERVERIP") != 0 && strcmp(key, "SERVERPORT") != 0 && strcmp(key, "LOGMSG") != 0){
+	if(strcmp(key,"PORT")!=0&&strcmp(key, "NAME") != 0 && strcmp(key, "TEAM") != 0 && strcmp(key, "SERVERIP") != 0 && strcmp(key, "SERVERPORT") != 0 && strcmp(key, "LOGMSG") != 0){
 		printf("illegal key!\n");
 		return NULL;
 	}
@@ -48,6 +48,8 @@ int socket_create_udp(int port){
 	server.sin_family = AF_INET;
 	server.sin_addr.s_addr = htonl(INADDR_ANY);
 	server.sin_port = htons(port);
+    unsigned long opt=1;
+    setsockopt(listener,SOL_SOCKET,SO_REUSEADDR,&opt,sizeof(opt));
 
 	if(bind(listener, (struct sockaddr *)&server, sizeof(server)) < 0){
 		return -1;
