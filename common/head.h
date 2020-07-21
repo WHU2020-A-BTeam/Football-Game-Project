@@ -36,6 +36,11 @@
 #include <unistd.h>
 #include <string.h>
 #include <sys/epoll.h>
+#include "datatype.h"
 #include "common.h"
-
+#include "udp_epoll.h"
+#include "thread_pool.h"
+#include "sub_reactor.h"
+#define MAX 20
+#define NWORKER 5
 #endif

@@ -10,7 +10,7 @@ extern char conf_ans[512];
 
 char *get_conf_value(const char *path, const char *key){
 	FILE *fp =NULL;
-	if(strcmp(key, "NAME") != 0 && strcmp(key, "TEAM") != 0 && strcmp(key, "SERVERIP") != 0 && strcmp(key, "SERVERPORT") != 0 && strcmp(key, "LOGMSG") != 0){
+	if(strcmp(key, "PORT") != 0 && strcmp(key, "NAME") != 0 && strcmp(key, "TEAM") != 0 && strcmp(key, "SERVERIP") != 0 && strcmp(key, "SERVERPORT") != 0 && strcmp(key, "LOGMSG") != 0){
 		printf("illegal key!\n");
 		return NULL;
 	}
@@ -18,6 +18,7 @@ char *get_conf_value(const char *path, const char *key){
 		printf("illegal path!\n");
 		return NULL;
 	}
+    char *find_key = NULL;
 	char *line = NULL;
 	size_t size = 0;
 	ssize_t read = 0;
@@ -32,6 +33,13 @@ char *get_conf_value(const char *path, const char *key){
 					break;
 				}
 			}
+            /*if(find_key[strlen(key)] == '=') {
+                strncpy(conf_ans, find_key + strlen(key) + 1, 100);
+                free(line);
+                line = NULL;
+                break;   
+            }*/
+
 		}
 		free(line);
 		line = NULL;
@@ -39,17 +47,21 @@ char *get_conf_value(const char *path, const char *key){
 	return conf_ans;
 }
 
+
 int socket_create_udp(int port){
 	int listener;
 	if ((listener = socket(AF_INET, SOCK_DGRAM, 0)) < 0){
+		printf("listen error\n");
 		return -1;
 	}
 	struct sockaddr_in server;
 	server.sin_family = AF_INET;
 	server.sin_addr.s_addr = htonl(INADDR_ANY);
 	server.sin_port = htons(port);
-
+	unsigned long opt = 1;
+	setsockopt(listener, SOL_SOCKET, SO_REUSEADDR, &opt, sizeof(opt));
 	if(bind(listener, (struct sockaddr *)&server, sizeof(server)) < 0){
+		printf("listen eeeee\n");
 		return -1;
 	}
 	return listener;
@@ -58,7 +70,7 @@ int socket_create_udp(int port){
 
 int socket_udp(){
     int sockfd;
-    if ((sockfd = socket(AE_INET, SOCK_DGRAM)) < 0){
+    if ((sockfd = socket(AF_INET, SOCK_DGRAM, 0)) < 0){
         perror("socket()");
         return -1;
     }
