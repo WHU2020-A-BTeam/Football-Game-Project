@@ -22,21 +22,26 @@ int main(int argc, char **argv){
 		}
 	}
 	//printf("yes\n");
-	char *str = get_conf_value(conf,"PORT");
+	/*char *str = get_conf_value(conf,"PORT");
+	char *str1 = get_conf_value(conf, "LINES");
+	char *str2 = get_conf_value(conf, "COLS");
 	//printf("yes\n");
-	if(str == NULL || get_conf_value(conf, "LINES") == NULL || get_conf_value(conf, "COLS") == NULL){
+	if(str == NULL || str1 == NULL || str2 == NULL){
 		perror("get_conf_value()");
 		exit(1);
-	}
+	}*/
 	//printf("%s\n", str);
-	if(!port) port = atoi(str);
-	court.width = atoi(get_conf_value(conf, "COLS"));
-	court.heigth = atoi(get_conf_value(conf, "LINES"));
+	if(!port){ 
+		port = atoi(get_conf_value(conf, "PORT"));
+	}
+	court.width = atoi(get_conf_value(conf, "LINES"));
+	court.heigth = atoi(get_conf_value(conf, "COLS"));
 	court.start.x = (court.width + 1) / 2;
 	court.start.y = (court.heigth + 1) / 2;
 	court.gate_width = 5;
 	court.gate_heigth = 10;
-	//printf("%d\n", port);
+	printf("%d\n", port);
+	//printf("%s %s\n", str1, str2);
 	if((listener = socket_create_udp(port)) < 0){
 		perror("socket_create_udp()");
 		exit(1);
