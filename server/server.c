@@ -56,34 +56,38 @@ int main(int argc, char **argv){
                 exit(1);
             
     }
-            struct User *zzq;
+       //     struct User *zzq;
           //  zzq.fd=0;
-    while(1){
+    while(1){   bzero(events,sizeof(events));
                 int nfds = epoll_wait(epollfd, events, MAX,-1 );
        // printf("zqzqzq");
         if(nfds < 0) {
                         perror("epoll_wait()");
                         exit(1);
                     
-        }  printf("%d\n",nfds);
+        } // printf("%d\n",nfds);
         for(int i = 0; i < nfds; i++){
             if( ((struct User*)events[i].data.ptr )->fd == listener) {
                         //printf("zzq\n");
                         struct User *user; user =(struct User*)malloc(sizeof(struct User));
                         bzero(user, sizeof(user));
-                                int new_fd = udp_accept(listener, user);
-
+                        int new_fd = udp_accept(listener, user);
                 if(new_fd > 0){
-                                        printf("New Connection!%d  \n",new_fd);
+                                printf("New Connection!%d  \n",new_fd);
                                 user->fd = new_fd;
-                                add_event_ptr(epollfd,new_fd,EPOLLIN,user);
+                                add_event_ptr(epollfd,new_fd,EPOLLIN|EPOLLRDHUP|EPOLLERR,user);
                  }
             }else{
-                if(events[i].events & EPOLLIN){
+                if(events[i].events & (EPOLLIN| EPOLLRDHUP|EPOLLHUP|EPOLLERR)){
                     char buff[512]={0};
-                    recv(((struct User*)events[i].data.ptr)->fd,buff,sizeof(buff),0);
+                    int ret=recv(((struct User*)events[i].data.ptr)->fd,buff,sizeof(buff),0);
                    // sleep(3);
-                   //printf("**%d**\n", ((struct User*)events[i].data.ptr)->fd);
+                    if( ret <=0) { //int temfd=((struct User*)events[i].data.ptr)->fd;
+                                printf("delete one connection\n");
+                                  close(((struct User*)events[i].data.ptr)->fd);
+                                  del_event(epollfd,((struct User*)events[i].data.ptr)->fd);
+                    }
+                   printf("**fd %d name: %s ", ((struct User*)events[i].data.ptr)->fd,((struct User*)events[i].data.ptr)->name);
                    printf("recv: %s**\n",buff );
                    // send(((struct User*)events[i].data.ptr)->fd,buff,strlen(buff),0);
                 }

@@ -84,7 +84,8 @@ int main(int argc, char **argv){
                                     }
                                         printf("Server : %s\n", response.msg);
                                             connect(sockfd, (struct sockaddr *)&server, len);
-                                            printf("%d\n",sockfd);
+                                           // printf("%d\n",sockfd);
+                                         //  close(sockfd);
                                                 char buff[512] = {0}; 
                                     while (1) {
                                                            bzero(buff, sizeof(buff));
