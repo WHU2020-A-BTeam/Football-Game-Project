@@ -2,7 +2,8 @@
 char *conf = "./footballd.conf";
 //int bepollfd, repollfd;
 //struct User *rteam, *bteam;
-
+struct Map court;
+struct Bpoint ball;
 pthread_mutex_t bmutex = PTHREAD_MUTEX_INITIALIZER;
 pthread_mutex_t rmutex = PTHREAD_MUTEX_INITIALIZER;
 
@@ -23,12 +24,18 @@ int main(int argc, char **argv){
 	//printf("yes\n");
 	char *str = get_conf_value(conf,"PORT");
 	//printf("yes\n");
-	if(str == NULL){
+	if(str == NULL || get_conf_value(conf, "LINES") == NULL || get_conf_value(conf, "COLS") == NULL){
 		perror("get_conf_value()");
 		exit(1);
 	}
 	//printf("%s\n", str);
 	if(!port) port = atoi(str);
+	court.width = atoi(get_conf_value(conf, "COLS"));
+	court.heigth = atoi(get_conf_value(conf, "LINES"));
+	court.start.x = (court.width + 1) / 2;
+	court.start.y = (court.heigth + 1) / 2;
+	court.gate_width = 5;
+	court.gate_heigth = 10;
 	//printf("%d\n", port);
 	if((listener = socket_create_udp(port)) < 0){
 		perror("socket_create_udp()");

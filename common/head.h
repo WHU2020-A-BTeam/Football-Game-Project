@@ -41,6 +41,10 @@
 #include "udp_epoll.h"
 #include "thread_pool.h"
 #include "sub_reactor.h"
+#include <curses.h>
+#include <ncurses.h>
+#include "color.h"
+#include "game_ui.h"
 #define MAX 20
 #define NWORKER 5
 #endif
