@@ -1,12 +1,22 @@
 #include "head.h"
 
 void do_with(struct User *user) {
-		char buff[512] = {0};
-		//printf("userfd = %d\n", user->fd);
-		recv(user->fd, buff, sizeof(buff), 0);
-		printf("Recv : %s\n", buff);
-		send(user->fd, buff, strlen(buff), 0);
-		bzero(buff, sizeof(buff));
+	char buff[512] = {0};
+    struct FootBallMsg msg;
+
+    recv(user->fd, (void *)&msg, sizeof(msg), 0);
+/*    if (msg.type &FT_FIN){
+
+    }else if (msg.type & FT_MSG){
+
+    }else if (msg.type & FT_WALL){
+
+    }else if (msg.type & FT_ACK){
+        
+    }*/
+    printf("Recv : %s\n", buff);
+	send(user->fd, buff, strlen(buff), 0);
+    bzero(buff, sizeof(buff));
 }
 
 

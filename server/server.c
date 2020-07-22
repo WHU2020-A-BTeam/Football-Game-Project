@@ -1,7 +1,12 @@
-#include "head.h"
+#include "../common/head.h"
+int port;
 char *conf = "./footballd.conf";
-//int bepollfd, repollfd;
-//struct User *rteam, *bteam;
+int bepollfd, repollfd;
+struct User *rteam, *bteam;
+struct Map court;
+WINDOW *Football, *Football_t, *Message, *Help, *Score, *Write;
+struct Bpoint ball; 
+struct BallStatus ball_status; 
 
 pthread_mutex_t bmutex = PTHREAD_MUTEX_INITIALIZER;
 pthread_mutex_t rmutex = PTHREAD_MUTEX_INITIALIZER;
@@ -9,7 +14,7 @@ pthread_mutex_t rmutex = PTHREAD_MUTEX_INITIALIZER;
 int main(int argc, char **argv){
 	//printf("yes\n");
 	int opt, listener, epollfd;
-	pthread_t red_t, blue_t;
+	pthread_t red_t, blue_t, heart_t;
 	while((opt = getopt(argc, argv, "p:")) != -1){
 		switch (opt) {
 			case 'p':
@@ -20,16 +25,29 @@ int main(int argc, char **argv){
 				exit(1);
 		}
 	}
-	//printf("yes\n");
+    bzero(&court, sizeof(court));
+    bzero(&ball, sizeof(ball));
+    bzero(&ball_status, sizeof(ball_status));
+
+
+
 	char *str = get_conf_value(conf,"PORT");
-	//printf("yes\n");
 	if(str == NULL){
 		perror("get_conf_value()");
 		exit(1);
 	}
-	//printf("%s\n", str);
-	if(!port) port = atoi(str);
-	//printf("%d\n", port);
+	
+    if(!port) port = atoi(str);
+
+
+    court.height = atoi(get_conf_value(conf, "LINES"));
+    court.width = atoi(get_conf_value(conf, "COLS"));
+    court.start.x = 3; 
+    court.start.y = 2;
+
+
+
+    initfootball();
 	if((listener = socket_create_udp(port)) < 0){
 		perror("socket_create_udp()");
 		exit(1);
@@ -46,11 +64,14 @@ int main(int argc, char **argv){
 	
 	struct task_queue redQueue;
 	struct task_queue blueQueue;
+
 	task_queue_init(&redQueue, MAX, repollfd);
 	task_queue_init(&blueQueue, MAX, bepollfd);
 
 	pthread_create(&red_t, NULL, sub_reactor, (void *)&redQueue);
 	pthread_create(&blue_t, NULL, sub_reactor, (void *)&blueQueue);
+   // pthread_create(&heart_t, NULL, heart_beat, NULL);
+
 
 	struct epoll_event ev, events[MAX];
 	ev.events = EPOLLIN;
@@ -60,6 +81,16 @@ int main(int argc, char **argv){
         perror("epoll_ctl");
         exit(1);
     }
+
+ //   signal(14, re_draw);
+    struct itimerval itimer;
+    itimer.it_interval.tv_sec = 0;
+    itimer.it_interval.tv_usec = 100000;
+    itimer.it_value.tv_sec = 2;
+    itimer.it_value.tv_usec = 0;
+
+    setitimer(ITIMER_REAL, &itimer, NULL );
+
 	//printf("yes\n");
 	while(1){
 		int nfds = epoll_wait(epollfd, events, MAX, -1);
