@@ -10,6 +10,7 @@ int sockfd = -1;
 
 int main(int argc, char **argv){
 	int opt;
+	pthread_t heart_t;
 	struct LogRequest request;
 	struct LogResponse response;
 	bzero(&request, sizeof(request));
@@ -89,15 +90,27 @@ int main(int argc, char **argv){
 	}
 	printf("Server : %s\n", response.msg);
 	connect(sockfd, (struct sockaddr *)&server, len);
+	struct FootballMsg msg;
+	//pthread_create(&heart_t, NULL, heart_beat_client, &sockfd);
 	while(1){
-		char buff[512] = {0};
+		/*char buff[512] = {0};
 		scanf("%[^\n]s", buff);
 		getchar();
 		send(sockfd, buff, strlen(buff), 0);
 		printf("Send : %s\n" , buff);
 		bzero(buff, sizeof(buff));
 		recv(sockfd, buff, sizeof(buff), 0);
-		printf("Server : %s\n", buff);
+		printf("Server : %s\n", buff);*/
+		//struct FootballMsg msg;
+		bzero(&msg, sizeof(msg));
+		recv(sockfd, (void *)&msg, sizeof(msg), 0);
+		printf("MSG!\n");
+		if(msg.type & FT_HEART){
+			msg.type = FT_ACK;
+			send(sockfd, (void *)&msg, sizeof(msg), 0);
+			printf("answer!!\n");
+		}
+
 	}
 	return 0;
 }

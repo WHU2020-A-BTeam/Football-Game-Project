@@ -1,12 +1,40 @@
 #include "head.h"
 
 void do_with(struct User *user) {
+		struct FootballMsg msg;
+		bzero(&msg, sizeof(msg));
 		char buff[512] = {0};
 		//printf("userfd = %d\n", user->fd);
-		recv(user->fd, buff, sizeof(buff), 0);
-		printf("Recv : %s\n", buff);
-		send(user->fd, buff, strlen(buff), 0);
-		bzero(buff, sizeof(buff));
+		recv(user->fd, (void *)&msg, sizeof(msg), 0);
+		if(msg.type & FT_FIN){
+		}
+		else if (msg.type & FT_MSG){
+		}
+		else if (msg.type & FT_WALL){
+		}
+		else if (msg.type & FT_ACK){
+			user->flag = 10;
+			user->online = 1;
+			printf("connect OK!\n");
+		}
+		else if (msg.type & FT_CTL){
+			if(msg.ctl.action & ACTION_DFL) {
+				user->loc.x += msg.ctl.dirx;
+				user->loc.y += msg.ctl.diry;
+			} else if (msg.ctl.action & ACTION_KICK){
+				//KICK
+			}
+			else if (msg.ctl.action & ACTION_CARRY){
+				//CARRY
+			}
+		}
+		//..
+
+		
+
+		//printf("Recv : %s\n", buff);
+		//send(user->fd, buff, strlen(buff), 0);
+		//bzero(buff, sizeof(buff));
 }
 
 

@@ -1,6 +1,6 @@
 #include "head.h"
 void *sub_reactor(void *arg){
-	printf("in thread : %lu\n", pthread_self());
+	//printf("in thread : %lu\n", pthread_self());
 	struct task_queue *taskQueue = (struct task_queue *)arg;
 	pthread_t *tid = (pthread_t *)calloc(NWORKER, sizeof(pthread_t));
 	for (int i = 0; i< NWORKER; i++){
@@ -14,7 +14,7 @@ void *sub_reactor(void *arg){
 			perror("epoll_wait()");
 			exit(1);
 		}
-		//printf("nfds = %d\n", nfds);
+		printf("nfds = %d\n", nfds);
 		for (int i = 0; i < nfds; i++){
 			struct User *user = (struct User *)events[i].data.ptr;
 			//printf("name = %s\n", user->name);

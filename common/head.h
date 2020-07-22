@@ -45,6 +45,8 @@
 #include <ncurses.h>
 #include "color.h"
 #include "game_ui.h"
+#include "heart_beat.h"
+#include "heart_beat_client.h"
 #define MAX 20
 #define NWORKER 5
 #endif

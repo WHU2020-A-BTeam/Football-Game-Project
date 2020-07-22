@@ -14,8 +14,8 @@ struct Point {
 };
 
 struct Bpoint {
-	int x;
-	int y;
+	double x;
+	double y;
 };
 
 struct User{
@@ -61,10 +61,52 @@ struct Speed{
 struct BallStatus {
 	struct Speed v;
 	struct Aspeed a;
-	int t;
-	int who;
+	int by_team;
 	char name[20];
 	//pthread_mutex_t mutex;
 };
+
+struct Score{
+	int red;
+	int blue;
+};
+
+//action value
+#define ACTION_KICK 0x01
+#define ACTION_CARRY 0X02
+#define ACTION_STOP 0X04
+#define ACTION_DFL 0X08
+
+struct Ctl{
+	int action;
+	int dirx;
+	int diry;
+	int strength;
+
+};
+
+
+//value type
+#define FT_HEART 0x01
+#define FT_ACK 0x02
+#define FT_MSG 0x04
+#define FT_WALL 0x08
+#define FT_CTL 0x10
+#define FT_MAP 0x20
+#define FT_FIN 0x40
+#define FT_SCORE 0x80
+#define FT_GAMEOVER 0x100
+
+#define MAX_MSG 1024
+
+struct FootballMsg{
+	int type;
+	int size;
+	int team;
+	char name[20];
+	char msg[MAX_MSG];
+	struct Ctl ctl;
+};
+
 
 #endif

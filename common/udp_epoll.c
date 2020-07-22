@@ -17,6 +17,13 @@ void del_event(int epollfd, int fd){
 	epoll_ctl(epollfd, EPOLL_CTL_DEL, fd, NULL);
 	return;
 }
+int check_online(struct LogRequest *request){
+	for(int i = 0 ; i < MAX; i++){
+		if(rteam[i].online == 1 && !strcmp(rteam[i].name, request->name)) return 1;
+		if(bteam[i].online == 1 && !strcmp(bteam[i].name, request->name)) return 1;
+	}
+	return 0;
+}
 
 extern int port;
 extern struct User *rteam, *bteam;
@@ -59,6 +66,12 @@ int udp_accept(int fd, struct User *user){
     /*response.Type = 0;
 	strcpy(response.msg, "Login, Please Wait......");
 	sendto(fd, (void *)&response, sizeof(response), 0, (struct sockaddr *)&client, len);*/
+	if (check_online(&request)) {
+		response.Type = 1;
+		strcpy(response.msg, "You have already login!");
+		sendto(fd, (void *)&response, sizeof(response), 0, (struct sockaddr *)&client, len);
+		return -1;
+	}
 
 	while(1){
     	new_fd = udp_connect((struct sockaddr_in *)&client);

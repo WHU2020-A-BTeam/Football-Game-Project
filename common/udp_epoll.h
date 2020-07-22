@@ -9,6 +9,7 @@ struct User *rteam, *bteam;
 
 void add_event_ptr(int epollfd, int fd, int events, struct User *user);
 void del_event(int epoll, int fd);
+//int check_online(struct LogRequset *request);
 int udp_connect(struct sockaddr_in *client);
 int udp_accept(int fd, struct User *user);
 int find_sub(struct User *team);
