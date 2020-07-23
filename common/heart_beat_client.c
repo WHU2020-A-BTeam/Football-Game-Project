@@ -2,7 +2,8 @@
 
 void *heart_beat_client(void *arg){
 	int sockfd = *(int *)arg;
-	//pthread_detach(pthread_self());	
+	//pthread_detach(pthread_self());
+	int count = 0;
 	while(1){
 		struct FootballMsg msg;
 		bzero(&msg, sizeof(msg));

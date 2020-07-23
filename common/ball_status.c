@@ -1,6 +1,7 @@
 #include "head.h"
 extern struct Bpoint ball;
 extern struct BallStatus ball_status;
+double cos_cal()
 int can_kick(struct Point *loc, int strength){
 	const double a_speed = 4.0;
 	const double para = sqrt(2);
