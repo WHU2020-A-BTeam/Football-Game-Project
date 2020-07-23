@@ -1,4 +1,4 @@
-#include "head.h"
+#include "../common/head.h"
 char *conf = "./footballd.conf";
 int bepollfd, repollfd;
 struct User *rteam, *bteam;
@@ -9,6 +9,7 @@ pthread_mutex_t bmutex = PTHREAD_MUTEX_INITIALIZER;
 pthread_mutex_t rmutex = PTHREAD_MUTEX_INITIALIZER;
 
 int main(int argc, char **argv){
+	//printf("yes\n");
 	int opt, listener, epollfd;
 	pthread_t red_t, blue_t, heart_t;
 	while((opt = getopt(argc, argv, "p:")) != -1){
@@ -24,6 +25,7 @@ int main(int argc, char **argv){
 	bzero(&court, sizeof(court));
 	bzero(&ball, sizeof(ball));
 	bzero(&ball_status, sizeof(ball_status));
+	//printf("yes\n");
 	/*char *str = get_conf_value(conf,"PORT");
 	char *str1 = get_conf_value(conf, "LINES");
 	char *str2 = get_conf_value(conf, "COLS");
@@ -32,6 +34,7 @@ int main(int argc, char **argv){
 		perror("get_conf_value()");
 		exit(1);
 	}*/
+	//printf("%s\n", str);
 	if(!port){ 
 		port = atoi(get_conf_value(conf, "PORT"));
 	}
@@ -78,20 +81,26 @@ int main(int argc, char **argv){
         exit(1);
     }
 
-//	signal(14, re_draw);
-/*	struct itimerval itimer;
+
+//    re_draw(1);
+/*	signal(14, re_draw);
+
+	struct itimerval itimer;
 	itimer.it_interval.tv_sec = 0;
 	itimer.it_interval.tv_usec = 100000;
-	itimer.it_value.tv_sec = 0;
-	itimer.it_value.tv_usec = 50000;
+	itimer.it_value.tv_sec = 2;
+	itimer.it_value.tv_usec = 0;
 	setitimer(ITIMER_REAL, &itimer, NULL);
-*/	//printf("yes\n");
+*/
+//	printf("yes\n");
 	while(1){
 		int nfds = epoll_wait(epollfd, events, MAX, -1);
+		//printf("no connect\n");
 		if(nfds < 0) {
 			perror("epoll_wait()");
 			exit(1);
 		}
+		//printf("nfds = %d\n", nfds);
 		for(int i = 0; i < nfds; ++i){
 			struct User user;
 			bzero(&user, sizeof(user));
@@ -99,10 +108,12 @@ int main(int argc, char **argv){
 				printf("Connecting\n");
 				int new_fd = udp_accept(listener, &user);
 
+				//printf("yes %d\n", new_fd);
 				if(new_fd > 0){
 					printf("New Connection!\n");
 					user.fd = new_fd;
 					add_to_sub_reactor(&user);
+					//add_event_ptr(epollfd, new_fd, EPOLLIN, &user);
 				}
 
 			}

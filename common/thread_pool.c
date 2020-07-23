@@ -13,25 +13,30 @@ void do_with(struct User *user) {
 		else if (msg.type & FT_WALL){
 		}
 		else if (msg.type & FT_ACK){
-	//		user->flag = 10;
-	//		user->online = 1;
-            printf("file :%s, connect OK!\n", __FILE__);
+			user->flag = 10;
+//			printf("connect OK!\n");
+			return ;
 		}
 		else if (msg.type & FT_CTL){
 			if(msg.ctl.action & ACTION_DFL) {
-				user->loc.x += msg.ctl.dirx;
-				user->loc.y += msg.ctl.diry;
+                printf("move!\n");
+//				user->loc.x += msg.ctl.dirx;
+//				user->loc.y += msg.ctl.diry;
 			} else if (msg.ctl.action & ACTION_KICK){
-				//KICK
+				printf("kick!\n");
+                //KICK
 			}
 			else if (msg.ctl.action & ACTION_CARRY){
-				//CARRY
+				printf("carry\n");
+                //CARRY
 			}
+            else if (msg.ctl.action & ACTION_STOP){
+                printf("stop!\n");
+            }
 		}
 		//..
 
 		
-        printf("file :%s, do OK!\n", __FILE__);
 
 		//printf("Recv : %s\n", buff);
 		//send(user->fd, buff, strlen(buff), 0);
@@ -59,8 +64,8 @@ void task_queue_push(struct task_queue *taskQueue, struct User *user){
 	}
 
 	taskQueue->team[taskQueue->tail] = user;
-    taskQueue->total++;
-    printf("file : %s, add user %s\n", __FILE__, user->name);
+	taskQueue->total++;
+//	printf("add user %s\n", user->name);
 	if(++taskQueue->tail == taskQueue->size) {
 		taskQueue->tail = 0;
 	}
@@ -72,13 +77,13 @@ void task_queue_push(struct task_queue *taskQueue, struct User *user){
 struct User *task_queue_pop(struct task_queue *taskQueue){
 
 	pthread_mutex_lock(&taskQueue->mutex);
-	
-    while(taskQueue->tail == taskQueue->head){
+	//printf("Pop\n");
+	while(taskQueue->tail == taskQueue->head){
 		pthread_cond_wait(&taskQueue->cond, &taskQueue->mutex);
 	}
 	struct User *user = taskQueue->team[taskQueue->head];
 	taskQueue->total--;
-	printf("pop user : %s\n", user->name);
+//	printf("pop user : %s\n", user->name);
 	if (++taskQueue->head == taskQueue->size) {
 		taskQueue->head = 0;
 	}
@@ -89,8 +94,7 @@ struct User *task_queue_pop(struct task_queue *taskQueue){
 void *thread_run(void *arg){
 	pthread_detach(pthread_self());
 	struct task_queue *taskQueue = (struct task_queue *)arg;
-	
-    while (1){
+	while (1){
 		struct User *user = task_queue_pop(taskQueue);
 		do_with(user);
 	}

@@ -2,9 +2,6 @@
 extern pthread_mutex_t bmutex;
 extern pthread_mutex_t rmutex;
 extern int bepollfd, repollfd;
-extern int port;
-extern struct User *rteam, *bteam;
-
 void add_event_ptr(int epollfd, int fd, int events, struct User *user){
 	struct epoll_event ev;
 	ev.events = events;
@@ -28,6 +25,8 @@ int check_online(struct LogRequest *request){
 	return 0;
 }
 
+extern int port;
+extern struct User *rteam, *bteam;
 int udp_connect(struct sockaddr_in *client){
 	int sockfd;
 	socklen_t len = sizeof(*client);
@@ -64,6 +63,9 @@ int udp_accept(int fd, struct User *user){
         sendto(fd, (void *)&response, sizeof(response), 0, (struct sockaddr *)&client, len);
         return -1;   
     }
+    /*response.Type = 0;
+	strcpy(response.msg, "Login, Please Wait......");
+	sendto(fd, (void *)&response, sizeof(response), 0, (struct sockaddr *)&client, len);*/
 	if (check_online(&request)) {
 		response.Type = 1;
 		strcpy(response.msg, "You have already login!");
@@ -91,7 +93,6 @@ int udp_accept(int fd, struct User *user){
     
     return new_fd; 
 }
-
 int find_sub(struct User *team){
 	for(int i =0 ; i < MAX; i++){
 		if(!team[i].online ) return i;
@@ -119,5 +120,6 @@ void add_to_sub_reactor(struct User *user){
 		add_event_ptr(bepollfd, team[sub].fd, EPOLLIN | EPOLLET, &team[sub]);
 	else 
 		add_event_ptr(repollfd, team[sub].fd, EPOLLIN | EPOLLET, &team[sub]);
+
 
 }

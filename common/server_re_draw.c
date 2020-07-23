@@ -4,9 +4,86 @@ extern struct User *rteam, *bteam;
 extern WINDOW *Football, *Football_t;
 extern struct BallStatus ball_status;
 extern struct Bpoint ball;
+extern struct Map court;
 
 void re_draw_ball(){
+    double a_x = ball_status.a.x;
+    double a_y = ball_status.a.y;
+    double v_x = ball_status.v.x;
+    double v_y = ball_status.v.y;
+    double time = 0.1;  
+    double itime = 0.0;
+    while(1){
+        itime += 0.001;//间隔时间为0.001s
+        if (itime == time){
+            break;
+        }
+        v_x = v_x + a_x * 0.001;
+        v_y = v_y + a_y * 0.001;
+    
+        if (v_x<=0 && v_y<=0){
+            a_x = a_y = 0;
+            v_x = v_y = 0;
+        }
+        else if (v_x <= 0 && v_y > 0){
+            a_x = 0;
+            v_x = 0;
+        }
+        else if (v_x > 0 && v_y <= 0){
+            a_y = v_y = 0;
+        }
+        ball.x += v_x * 0.001 - 0.5 * a_x * 0.001 * 0.001;
+        ball.y += v_y *0.001 -0.5 * a_y *0.001*0.001;
+        
+        if (ball.x > court.width-1){
+            ball.x = court.width-1;
+            a_x = a_y = 0;
+            v_x = v_y = 0;
+            break;
+        }
+        if (ball.x < 1){
+            ball.x = 1;
+            a_x = a_y = 0;
+            v_x = v_y = 0;
+            break;
+        }
+        if (ball.y > court.heigth-1){
+            ball.y = court.heigth - 1;
+            a_x = a_y = 0;
+            v_x = v_y = 0;
+            break;
+        }
+        if (ball.y < 1){
+            ball.y = 1;
+            a_x = a_y = 0;
+            v_x = v_y = 0;
+            break;
+        }
+    }
+    ball_status.a.x = a_x;
+    ball_status.a.y = a_y;
+    ball_status.v.x = v_x;
+    ball_status.v.y = v_y;
+
+//    printf("yes/n");
+	if (!has_colors() || start_color() == ERR) {
+        endwin();
+        fprintf(stderr, "终端不支持颜色!\n");
+        exit(1);
+    }
+
+    init_pair(1, COLOR_GREEN, COLOR_BLACK); //绿色
+    init_pair(2, COLOR_RED, COLOR_BLACK);//红色
+    init_pair(3, COLOR_WHITE, COLOR_BLACK);//白色
+    init_pair(4, COLOR_YELLOW, COLOR_BLACK);//黄色
+    init_pair(5, COLOR_CYAN, COLOR_BLACK);//青色
+    init_pair(6, COLOR_BLUE, COLOR_BLACK);//蓝色
+    init_pair(7, COLOR_MAGENTA, COLOR_BLACK); //洋红
+    wattron(Football, COLOR_PAIR(6));
+    w_gotoxy_putc(Football, ball.x, ball.y, 'o');
+    w_gotoxy_puts(Football, ball.x, ball.y + 2, "hahaha");
 }
+
 
 void re_draw_player(int team, char *name, struct Point *loc){
 	if (!has_colors() || start_color() == ERR) {
@@ -47,9 +124,9 @@ void re_draw_team(struct User *team){
 	}
 }
 
-void re_draw(){
-	//re_draw_ball();
+void re_draw(int m){
+	re_draw_ball();
 	re_draw_team(rteam);
 	re_draw_team(bteam);
-
 }
+

@@ -14,7 +14,7 @@ void *sub_reactor(void *arg){
 			perror("epoll_wait()");
 			exit(1);
 		}
-		printf("nfds = %d\n", nfds);
+//		printf("nfds = %d\n", nfds);
 		for (int i = 0; i < nfds; i++){
 			struct User *user = (struct User *)events[i].data.ptr;
 			//printf("name = %s\n", user->name);
