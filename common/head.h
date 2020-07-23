@@ -49,6 +49,7 @@
 #include "heart_beat_client.h"
 #include "server_re_draw.h"
 #include "ball_status.h"
+#include "send_ctl.h"
 #define MAX 20
 #define NWORKER 5
 #endif

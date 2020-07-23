@@ -10,7 +10,7 @@ void *heart_beat_client(void *arg){
 		if(msg.type & FT_HEART){
 			msg.type = FT_ACK;
 			send(sockfd, (void *)&msg, sizeof(msg), 0);
-			printf("answer!!\n");
+//			printf("answer!!\n");
 		}
 	}
 }

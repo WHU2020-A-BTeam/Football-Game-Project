@@ -1,4 +1,4 @@
-#include "head.h"
+#include "../common/head.h"
 struct Map court;
 struct Bpoint ball;
 pthread_mutex_t bmutex, rmutex;
@@ -7,6 +7,8 @@ char server_ip[20] = {0};
 int team = -1;
 char *conf = "./football.conf";
 int sockfd = -1;
+struct FootballMsg ctl_msg;
+
 
 int main(int argc, char **argv){
 	int opt;
@@ -15,6 +17,8 @@ int main(int argc, char **argv){
 	struct LogResponse response;
 	bzero(&request, sizeof(request));
 	bzero(&response, sizeof(response));
+    noecho();
+    cbreak();
 	while((opt = getopt(argc, argv, "h:p:t:m:n:")) != -1){
 		switch (opt) {
 			case 't':
@@ -49,8 +53,10 @@ int main(int argc, char **argv){
 	court.start.y = (court.heigth + 1) / 2;
 	court.gate_width = 5;
 	court.gate_heigth = 10;
-	printf("PORT:%d \nTEAM:%d \nIP:%s\n NAME:%s\nLOGMSG:%s\n", server_port, request.team, server_ip, request.name, request.msg);
-	struct sockaddr_in server;
+//	printf("PORT:%d \nTEAM:%d \nIP:%s\n NAME:%s\nLOGMSG:%s\n", server_port, request.team, server_ip, request.name, request.msg);
+    
+    
+    struct sockaddr_in server;
 	server.sin_family = AF_INET;
 	server.sin_port = htons(server_port);
 	server.sin_addr.s_addr = inet_addr(server_ip);
@@ -69,9 +75,11 @@ int main(int argc, char **argv){
 	fd_set set;
 	FD_ZERO(&set);
 	FD_SET(sockfd, &set);
+
 	struct timeval tv;
 	tv.tv_sec = 5;
 	tv.tv_usec = 0;
+
 	int retval = select(sockfd + 1, &set, NULL, NULL, &tv);
 	if(retval < 0) {
 		perror("select()");
@@ -89,32 +97,67 @@ int main(int argc, char **argv){
 		exit(1);
 	}
 	printf("Server : %s\n", response.msg);
-	connect(sockfd, (struct sockaddr *)&server, len);
-	struct FootballMsg msg;
-	int count = 0;
+	
+    
+    connect(sockfd, (struct sockaddr *)&server, len);
 	pthread_create(&heart_t, NULL, heart_beat_client, &sockfd);
-	while(1){
-		/*char buff[512] = {0};
-		scanf("%[^\n]s", buff);
-		getchar();
-		send(sockfd, buff, strlen(buff), 0);
-		printf("Send : %s\n" , buff);
-		bzero(buff, sizeof(buff));
-		recv(sockfd, buff, sizeof(buff), 0);
-		printf("Server : %s\n", buff);*/
-		//struct FootballMsg msg;
-		/*bzero(&msg, sizeof(msg));
-		printf("%d\n", sockfd);
-		recv(sockfd, (void *)&msg, sizeof(msg), 0);
-		printf("MSG!\n");
-		if(msg.type & FT_HEART != 0){
-			msg.type = FT_ACK;
-			send(sockfd, (void *)&msg, sizeof(msg), 0);
-			printf("send!\n");
-			count++;
-			printf("answer %d !!\n", count);
-		}*/
-
+    
+    
+    bzero(&ctl_msg, sizeof(ctl_msg));
+    while(1){
+        char c = getchar();
+        switch (c){
+            case 'a': 
+                ctl_msg.type = FT_CTL;
+                ctl_msg.ctl.action = ACTION_DFL;
+                ctl_msg.ctl.dirx = -1; 
+                ctl_msg.ctl.diry = 0;
+                send_ctl();
+                break;
+            case 'd': 
+                ctl_msg.type = FT_CTL; 
+                ctl_msg.ctl.action = ACTION_DFL;
+                ctl_msg.ctl.dirx = 1; 
+                ctl_msg.ctl.diry = 0;
+                send_ctl();
+                break;
+            case 's': 
+                ctl_msg.type = FT_CTL; 
+                ctl_msg.ctl.action = ACTION_DFL;
+                ctl_msg.ctl.dirx = 0; 
+                ctl_msg.ctl.diry = -1;
+                send_ctl();
+                break;
+            case 'w': 
+                ctl_msg.type = FT_CTL; 
+                ctl_msg.ctl.action = ACTION_DFL;
+                ctl_msg.ctl.dirx = 0; 
+                ctl_msg.ctl.diry = 1;
+                send_ctl();
+                break;
+            case ' '://空格：力度条
+                break;
+            case 'j'://停球
+                ctl_msg.type = FT_CTL;
+                ctl_msg.ctl.action = ACTION_STOP;
+            //
+                break;
+            case 'k'://踢球
+                ctl_msg.type = FT_CTL;
+                ctl_msg.ctl.action = ACTION_KICK;
+                break;
+            case 'l'://带球
+                ctl_msg.type = FT_CTL;
+                ctl_msg.ctl.action = ACTION_CARRY;
+                break;
+            case 'n'://显示姓名
+                break;
+            case '\n'://回车：打开输入框
+            //    send_chat();
+                break;
+            default:
+                break;
+        }
 	}
 	return 0;
 }

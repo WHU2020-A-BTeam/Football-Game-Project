@@ -45,7 +45,7 @@ int main(int argc, char **argv){
 	court.gate_width = 5;
 	court.gate_heigth = 10;
 
-	initfootball();
+//	initfootball();
 
 	//printf("%d\n", port);
 	//printf("%s %s\n", str1, str2);
@@ -83,7 +83,7 @@ int main(int argc, char **argv){
 
 
 //    re_draw(1);
-	signal(14, re_draw);
+/*	signal(14, re_draw);
 
 	struct itimerval itimer;
 	itimer.it_interval.tv_sec = 0;
@@ -91,7 +91,7 @@ int main(int argc, char **argv){
 	itimer.it_value.tv_sec = 2;
 	itimer.it_value.tv_usec = 0;
 	setitimer(ITIMER_REAL, &itimer, NULL);
-
+*/
 //	printf("yes\n");
 	while(1){
 		int nfds = epoll_wait(epollfd, events, MAX, -1);

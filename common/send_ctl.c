@@ -8,7 +8,8 @@
 #include "head.h"
 
 extern int sockfd;
-extern struct FootBallMsg ctl_msg;
+extern struct FootballMsg ctl_msg;
+
 void send_ctl(){
     if (ctl_msg.ctl.dirx || ctl_msg.ctl.diry)
         send(sockfd, (void *)&ctl_msg, sizeof(ctl_msg), 0);
