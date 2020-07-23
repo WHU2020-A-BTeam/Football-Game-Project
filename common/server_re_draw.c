@@ -11,7 +11,7 @@ void re_draw_ball(){
     double a_y = ball_status.a.y;
     double v_x = ball_status.v.x;
     double v_y = ball_status.v.y;
-    double time = 0.05;  
+    double time = 0.1;  
     double itime = 0.0;
     while(1){
         itime += 0.001;//间隔时间为0.001s
@@ -65,6 +65,7 @@ void re_draw_ball(){
     ball_status.v.x = v_x;
     ball_status.v.y = v_y;
 
+//    printf("yes/n");
 	if (!has_colors() || start_color() == ERR) {
         endwin();
         fprintf(stderr, "终端不支持颜色!\n");
@@ -80,6 +81,7 @@ void re_draw_ball(){
     init_pair(7, COLOR_MAGENTA, COLOR_BLACK); //洋红
     wattron(Football, COLOR_PAIR(6));
     w_gotoxy_putc(Football, ball.x, ball.y, 'o');
+    w_gotoxy_puts(Football, ball.x, ball.y + 2, "hahaha");
 }
 
 
@@ -122,8 +124,8 @@ void re_draw_team(struct User *team){
 	}
 }
 
-void re_draw(){
-	//re_draw_ball();
+void re_draw(int m){
+	re_draw_ball();
 	re_draw_team(rteam);
 	re_draw_team(bteam);
 }

@@ -14,7 +14,7 @@ char *get_conf_value(const char *path, const char *key){
 		printf("illegal key!\n");
 		return NULL;
 	}
-	printf("%s\n", key);
+//	printf("%s\n", key);
 	if((fp = fopen(path, "r")) == NULL){
 		printf("illegal path!\n");
 		return NULL;
@@ -27,7 +27,7 @@ char *get_conf_value(const char *path, const char *key){
 	memset(conf_ans, '\0', sizeof(conf_ans));
 	while((read = getline(&line, &size, fp)) != -1){
 		if(strstr(line, key) != NULL){
-			printf("%s\n", line);
+//			printf("%s\n", line);
 			for(int i = 0; i < read; i++){
 				if(line[i] == '='){
 					strncpy(conf_ans, line + i + 1, read - i - 2);

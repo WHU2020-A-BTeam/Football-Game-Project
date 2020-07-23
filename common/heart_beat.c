@@ -10,13 +10,13 @@ void heart_beat_team(struct User *team){
 			msg.type = FT_HEART;
 			msg.team = team[i].team;
 			send(team[i].fd, (void *)&msg, sizeof(msg), 0);
-			printf("fd = %d\n", team[i].fd);
-			printf("send!\n");
+//			printf("fd = %d\n", team[i].fd);
+//			printf("send!\n");
 			team[i].flag--;
 			if(team[i].flag == 0){
 				team[i].online = 0;
 				del_event(team[i].team ? bepollfd : repollfd, team[i].fd);
-				printf("failed!\n");
+//				printf("failed!\n");
 			}
 		}
 	}

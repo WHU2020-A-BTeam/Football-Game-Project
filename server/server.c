@@ -1,7 +1,7 @@
-#include "head.h"
+#include "../common/head.h"
 char *conf = "./footballd.conf";
-//int bepollfd, repollfd;
-//struct User *rteam, *bteam;
+int bepollfd, repollfd;
+struct User *rteam, *bteam;
 struct Map court;
 struct Bpoint ball;
 extern struct BallStatus ball_status;
@@ -45,7 +45,7 @@ int main(int argc, char **argv){
 	court.gate_width = 5;
 	court.gate_heigth = 10;
 
-	//initfootball();
+	initfootball();
 
 	//printf("%d\n", port);
 	//printf("%s %s\n", str1, str2);
@@ -67,11 +67,11 @@ int main(int argc, char **argv){
 	struct task_queue blueQueue;
 	task_queue_init(&redQueue, MAX, repollfd);
 	task_queue_init(&blueQueue, MAX, bepollfd);
-	printf("yes\n");
+//	printf("yes\n");
 	pthread_create(&red_t, NULL, sub_reactor, (void *)&redQueue);
 	pthread_create(&blue_t, NULL, sub_reactor, (void *)&blueQueue);
 	pthread_create(&heart_t, NULL, heart_beat, NULL);
-	printf("yes\n");
+//	printf("yes\n");
 	struct epoll_event ev, events[MAX];
 	ev.events = EPOLLIN;
 	ev.data.fd = listener;
@@ -81,16 +81,18 @@ int main(int argc, char **argv){
         exit(1);
     }
 
-	//signal(14, re_draw);
-	/*struct itimerval itimer;
+
+//    re_draw(1);
+	signal(14, re_draw);
+
+	struct itimerval itimer;
 	itimer.it_interval.tv_sec = 0;
 	itimer.it_interval.tv_usec = 100000;
-	itimer.it_value.tv_sec = 0;
-	itimer.it_value.tv_usec = 50000;
+	itimer.it_value.tv_sec = 2;
+	itimer.it_value.tv_usec = 0;
+	setitimer(ITIMER_REAL, &itimer, NULL);
 
-	setitimer(ITIMER_REAL, &itimer, NULL);*/
-
-	//printf("yes\n");
+//	printf("yes\n");
 	while(1){
 		int nfds = epoll_wait(epollfd, events, MAX, -1);
 		//printf("no connect\n");

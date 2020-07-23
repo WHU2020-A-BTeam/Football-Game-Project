@@ -47,6 +47,8 @@
 #include "game_ui.h"
 #include "heart_beat.h"
 #include "heart_beat_client.h"
+#include "server_re_draw.h"
+#include "ball_status.h"
 #define MAX 20
 #define NWORKER 5
 #endif
