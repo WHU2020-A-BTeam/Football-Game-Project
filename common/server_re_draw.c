@@ -6,6 +6,11 @@ extern struct BallStatus ball_status;
 extern struct Bpoint ball;
 
 void re_draw_ball(){
+    double a_x = ball_status.a.x;
+    double a_y = ball_status.a.y;
+    double v_x = ball_status.v.x;
+    double v_y = ball_status.v.y;
+    
 }
 
 void re_draw_player(int team, char *name, struct Point *loc){
