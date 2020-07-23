@@ -91,7 +91,8 @@ int main(int argc, char **argv){
 	printf("Server : %s\n", response.msg);
 	connect(sockfd, (struct sockaddr *)&server, len);
 	struct FootballMsg msg;
-	//pthread_create(&heart_t, NULL, heart_beat_client, &sockfd);
+	int count = 0;
+	pthread_create(&heart_t, NULL, heart_beat_client, &sockfd);
 	while(1){
 		/*char buff[512] = {0};
 		scanf("%[^\n]s", buff);
@@ -102,14 +103,17 @@ int main(int argc, char **argv){
 		recv(sockfd, buff, sizeof(buff), 0);
 		printf("Server : %s\n", buff);*/
 		//struct FootballMsg msg;
-		bzero(&msg, sizeof(msg));
+		/*bzero(&msg, sizeof(msg));
+		printf("%d\n", sockfd);
 		recv(sockfd, (void *)&msg, sizeof(msg), 0);
 		printf("MSG!\n");
-		if(msg.type & FT_HEART){
+		if(msg.type & FT_HEART != 0){
 			msg.type = FT_ACK;
 			send(sockfd, (void *)&msg, sizeof(msg), 0);
-			printf("answer!!\n");
-		}
+			printf("send!\n");
+			count++;
+			printf("answer %d !!\n", count);
+		}*/
 
 	}
 	return 0;

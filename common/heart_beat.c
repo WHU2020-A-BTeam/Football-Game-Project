@@ -10,6 +10,7 @@ void heart_beat_team(struct User *team){
 			msg.type = FT_HEART;
 			msg.team = team[i].team;
 			send(team[i].fd, (void *)&msg, sizeof(msg), 0);
+			printf("fd = %d\n", team[i].fd);
 			printf("send!\n");
 			team[i].flag--;
 			if(team[i].flag == 0){
@@ -23,7 +24,7 @@ void heart_beat_team(struct User *team){
 }
 
 void *heart_beat(void *arg){
-		pthread_detach(pthread_self());
+	//pthread_detach(pthread_self());
 		/*signal(SIGALRM, heart_beat_team(rteam));
 		signal(SIGALRM, heart_beat_team(bteam));
 		struct itimerval itimer;
@@ -36,7 +37,7 @@ void *heart_beat(void *arg){
 
 	while(1) {
 		clock_t timer = clock();
-		if(timer % 200 == 0){
+		if(timer % 50000 == 0){
 			heart_beat_team(rteam);
 			heart_beat_team(bteam);
 			//printf("BEAT!\n");

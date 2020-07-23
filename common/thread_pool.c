@@ -14,8 +14,9 @@ void do_with(struct User *user) {
 		}
 		else if (msg.type & FT_ACK){
 			user->flag = 10;
-			user->online = 1;
+			//user->online = 1;
 			printf("connect OK!\n");
+			return ;
 		}
 		else if (msg.type & FT_CTL){
 			if(msg.ctl.action & ACTION_DFL) {
@@ -77,7 +78,7 @@ struct User *task_queue_pop(struct task_queue *taskQueue){
 	}
 	struct User *user = taskQueue->team[taskQueue->head];
 	taskQueue->total--;
-	//printf("pop user : %s\n", user->name);
+	printf("pop user : %s\n", user->name);
 	if (++taskQueue->head == taskQueue->size) {
 		taskQueue->head = 0;
 	}
