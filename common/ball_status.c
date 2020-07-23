@@ -1,12 +1,15 @@
 #include "head.h"
 extern struct Bpoint ball;
 extern struct BallStatus ball_status;
+
 double cos_cal(double x, double y){
 	return x * sqrt(pow(x, 2) + pow(y, 2)) / (pow(x, 2) + pow(y, 2));
 }
+
 double sin_cal(double x, double y){
 	return y * sqrt(pow(x, 2) + pow(y, 2)) / (pow(x, 2) + pow(y, 2));
 }
+
 int can_kick(struct Point *loc, int strength){
 	const double a_speed = 4.0;;
 
