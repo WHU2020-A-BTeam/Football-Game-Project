@@ -14,8 +14,8 @@ struct Point {
 };
 
 struct Bpoint {
-    double x;
-    double y;
+	double x;
+	double y;
 };
 
 struct User{
@@ -39,69 +39,74 @@ struct LogResponse{
     char msg[512];
 };
 
-struct Map{
-    int width;
-    int height;
-    struct Point start;
-    int gate_width;
-    int gate_height;
+struct Map {
+	int width;
+	int heigth;
+	struct Point start;
+	int gate_width;
+	int gate_heigth;
 };
 
+//球加速度
 struct Aspeed{
     double x;
-    double y;
+	double y;
 };
-
+//球的速度
 struct Speed{
-    double x;
-    double y;
+	double x;
+	double y;
 };
-
-struct BallStatus{
-    struct Speed v;
-    struct Aspeed a;
-    int t;
-    int who;
-    char name[20];
-    //pthread_mutex_t mutex;
+//球的状态
+struct BallStatus {
+	struct Speed v;
+	struct Aspeed a;
+	int by_team;
+	char name[20];
+	//pthread_mutex_t mutex;
 };
 
 struct Score{
-    int red;
-    int blue;
+	int red;
+	int blue;
 };
 
 //action value
 #define ACTION_KICK 0x01
-#define ACTION_CARRY 0x02
-#define ACTION_STOP 0x04
+#define ACTION_CARRY 0X02
+#define ACTION_STOP 0X04
+#define ACTION_DFL 0X08
 
 struct Ctl{
-    int action;
-    int dirx;
-    int diry;
-    int strength;
+	int action;
+	int dirx;
+	int diry;
+	int strength;
+
 };
 
-//type value
-#define FT_HEART 0x01 
+
+//value type
+#define FT_HEART 0x01
 #define FT_ACK 0x02
-#define FT_MSG 0x04  //私聊
+#define FT_MSG 0x04
 #define FT_WALL 0x08
 #define FT_CTL 0x10
-#define FT_MAP 0x20 //场地
+#define FT_MAP 0x20
 #define FT_FIN 0x40
 #define FT_SCORE 0x80
 #define FT_GAMEOVER 0x100
 
 #define MAX_MSG 1024
 
-struct FootBallMsg{
-    int type;
-    int size;
-    int team;
-    char name[20];
-    char Msg[MAX_MSG];
-    struct Ctl ctl;
+struct FootballMsg{
+	int type;
+	int size;
+	int team;
+	char name[20];
+	char msg[MAX_MSG];
+	struct Ctl ctl;
 };
+
+
 #endif

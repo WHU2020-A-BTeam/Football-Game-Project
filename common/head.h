@@ -36,13 +36,18 @@
 #include <unistd.h>
 #include <string.h>
 #include <sys/epoll.h>
-#include <curses.h>
 #include "datatype.h"
 #include "common.h"
 #include "udp_epoll.h"
 #include "thread_pool.h"
 #include "sub_reactor.h"
+#include <curses.h>
+#include <ncurses.h>
+#include "color.h"
 #include "game_ui.h"
+#include "heart_beat.h"
+#include "heart_beat_client.h"
+#include "server_re_draw.h"
 #define MAX 20
 #define NWORKER 5
 #endif
