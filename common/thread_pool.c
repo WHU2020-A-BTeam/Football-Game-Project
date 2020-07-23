@@ -1,12 +1,56 @@
 #include "head.h"
+extern struct User *rteam;
+extern struct User *bteam;
 
+
+int find(struct User * team,char * name){
+    for(int i=0; i<MAX; i++){
+        if(team[i].online){
+        if(strcmp(team[i].name,name)==0)
+        return i;
+    }}
+        return -1;
+}
 void do_with(struct User *user) {
-		char buff[512] = {0};
+		/*char buff[512] = {0};
 		//printf("userfd = %d\n", user->fd);
 		recv(user->fd, buff, sizeof(buff), 0);
 		printf("Recv : %s\n", buff);
 		send(user->fd, buff, strlen(buff), 0);
-		bzero(buff, sizeof(buff));
+		bzero(buff, sizeof(buff));*/
+    struct FootBallMsg msg;
+    recv(user->fd, (void*)&msg, sizeof(msg), 0);
+    if (msg.type & FT_FIN){
+
+    }
+    else if (msg.type & FT_MSG){
+
+    } else if(msg.type & FT_WALL){
+
+    }else if(msg.type & FT_ACK){
+        
+    }else if(msg.type & FT_CTL){
+        struct User * team=NULL;
+        if(msg.team == 0) team=rteam;
+        else team =bteam;
+        int num = find(team,msg.name);
+        if(num <0){  printf(" not find \n");
+            exit(1);
+        }
+        if(msg.ctl.dirx=='d'){
+            team[num].loc.x++;
+        }
+        else if(msg.ctl.dirx == 'a'){
+            team[num].loc.x--;
+        }
+        else if(msg.ctl.diry == 'w'){
+            team[num].loc.y--;
+        }
+        else if(msg.ctl.diry == 's' ){
+            team[num].loc.y++;
+        }
+
+    }
 }
 
 
@@ -31,7 +75,7 @@ void task_queue_push(struct task_queue *taskQueue, struct User *user){
 
 	taskQueue->team[taskQueue->tail] = user;
 	taskQueue->total++;
-	printf("add user %s\n", user->name);
+//	printf("queue add user %s\n", user->name);
 	if(++taskQueue->tail == taskQueue->size) {
 		taskQueue->tail = 0;
 	}

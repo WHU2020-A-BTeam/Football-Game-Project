@@ -7,6 +7,25 @@
 
 #ifndef _DATATYPE_H
 #define _DATATYPE_H
+#define FT_HEART 0x01
+#define FT_ACK 0x02
+#define FT_MSG 0x04
+#define FT_WALL 0x08
+#define FT_CTL 0x10
+#define FT_MAP 0x20
+#define FT_FIN 0x40
+#define FT_SCORE 0x80
+#define FT_GAMEOVER 0x100
+#define MAX_MSG 1024
+
+
+#define ACTION_KICK 0x01
+#define ACTION_CARRY 0x02
+#define ACTION_STOP 0x04
+#define ACTION_DFL 0x08
+#define ACTION_LOGIN 0x10
+#define ACTION_EXIT 0x20
+
 
 struct Point {
     int x;
@@ -65,6 +84,20 @@ struct BallStatus {
 	int who;
 	char name[20];
 	//pthread_mutex_t mutex;
+};
+struct Ctl{    
+    int action;
+    int dirx; 
+    int diry;
+    int strength;
+};
+struct FootBallMsg{
+    int type;
+    int size;
+    int team;
+    char name[20];
+    char msg[MAX_MSG];
+    struct Ctl ctl;
 };
 
 #endif

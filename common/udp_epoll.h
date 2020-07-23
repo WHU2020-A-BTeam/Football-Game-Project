@@ -7,6 +7,7 @@ struct User *rteam, *bteam;
 //pthread_mutex_t bmutex = PTHREAD_MUTEX_INITIALIZER;
 //pthread_mutex_t rmutex = PTHREAD_MUTEX_INITIALIZER;
 
+int check_online(struct LogRequest *request);
 void add_event_ptr(int epollfd, int fd, int events, struct User *user);
 void del_event(int epoll, int fd);
 int udp_connect(struct sockaddr_in *client);

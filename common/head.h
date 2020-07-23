@@ -45,6 +45,16 @@
 #include <ncurses.h>
 #include "color.h"
 #include "game_ui.h"
+#include "heart_beat.h"
+#include"server_re_draw.h"
+#include"show_data_stream.h"
+#include "send_ctl.h"
+#include"send_chat.h"
+
+
+
+
+
 #define MAX 20
 #define NWORKER 5
 #endif

@@ -7,14 +7,15 @@
 
 #include "head.h"
 extern char conf_ans[512];
-
+void make_non_block(int fd) {    unsigned long ul = 1;    ioctl(fd, FIONBIO, &ul);}
+void make_block(int fd) {    unsigned long ul = 0;    ioctl(fd, FIONBIO, &ul);}
 char *get_conf_value(const char *path, const char *key){
 	FILE *fp =NULL;
 	if(strcmp(key, "LINES") != 0 && strcmp(key, "COLS") != 0 && strcmp(key, "PORT") != 0 && strcmp(key, "NAME") != 0 && strcmp(key, "TEAM") != 0 && strcmp(key, "SERVERIP") != 0 && strcmp(key, "SERVERPORT") != 0 && strcmp(key, "LOGMSG") != 0){
 		printf("illegal key!\n");
 		return NULL;
 	}
-	printf("%s\n", key);
+//	printf("%s\n", key);
 	if((fp = fopen(path, "r")) == NULL){
 		printf("illegal path!\n");
 		return NULL;
@@ -27,7 +28,7 @@ char *get_conf_value(const char *path, const char *key){
 	memset(conf_ans, '\0', sizeof(conf_ans));
 	while((read = getline(&line, &size, fp)) != -1){
 		if(strstr(line, key) != NULL){
-			printf("%s\n", line);
+//			printf("%s\n", line);
 			for(int i = 0; i < read; i++){
 				if(line[i] == '='){
 					strncpy(conf_ans, line + i + 1, read - i - 2);

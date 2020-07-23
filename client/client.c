@@ -7,6 +7,9 @@ char server_ip[20] = {0};
 int team = -1;
 char *conf = "./football.conf";
 int sockfd = -1;
+struct FootBallMsg ctl_msg;
+struct FootBallMsg chat_msg;
+
 
 int main(int argc, char **argv){
 	int opt;
@@ -42,21 +45,22 @@ int main(int argc, char **argv){
 	if (!strlen(server_ip)) strcpy(server_ip, get_conf_value(conf, "SERVERIP"));
 	if (!strlen(request.name)) strcpy(request.name, get_conf_value(conf, "NAME"));
 	if (!strlen(request.msg)) strcpy(request.msg, get_conf_value(conf, "LOGMSG"));
-	court.width = atoi(get_conf_value(conf, "COLS"));
+	
+    court.width = atoi(get_conf_value(conf, "COLS"));
 	court.heigth = atoi(get_conf_value(conf, "LINES"));
-	court.start.x = (court.width + 1) / 2;
-	court.start.y = (court.heigth + 1) / 2;
+	court.start.x = 3 ;
+	court.start.y = 3;
 	court.gate_width = 5;
 	court.gate_heigth = 10;
-	printf("PORT:%d \nTEAM:%d \nIP:%s\n NAME:%s\nLOGMSG:%s\n", server_port, request.team, server_ip, request.name, request.msg);
+
+
+//	printf("PORT:%d \nTEAM:%d \nIP:%s\n NAME:%s\nLOGMSG:%s\n", server_port, request.team, server_ip, request.name, request.msg);
 	struct sockaddr_in server;
 	server.sin_family = AF_INET;
 	server.sin_port = htons(server_port);
 	server.sin_addr.s_addr = inet_addr(server_ip);
 
 	socklen_t len = sizeof(server);
-	
-	//initfootball();
 
 	if((sockfd = socket_udp()) < 0){
 		perror("socket_udp()");
@@ -64,7 +68,7 @@ int main(int argc, char **argv){
 	}
 	
 	sendto(sockfd, (void *)&request, sizeof(request), 0, (struct sockaddr *)&server, len);
-	printf("send success!\n");
+//	printf("send success!\n");
 	fd_set set;
 	FD_ZERO(&set);
 	FD_SET(sockfd, &set);
@@ -79,25 +83,63 @@ int main(int argc, char **argv){
 	else if (retval){
 		int ret = recvfrom(sockfd, (void *)&response, sizeof(response), 0, (struct sockaddr *)&server, &len);
 		if(ret != sizeof(response)){
-			printf("The Game Server refused your login.\n\tThis May be helpful:%s\n", request.msg);
+	//		printf("The Game Server refused your login.\n\tThis May be helpful:%s\n", request.msg);
 			exit(1);
 		}
 	}
 	if (retval == 0) {
-		printf("The Game Server is out of service!.\n");
+	//	printf("The Game Server is out of service!.\n");
 		exit(1);
 	}
-	printf("Server : %s\n", response.msg);
+	//printf("Server : %s\n", response.msg);
 	connect(sockfd, (struct sockaddr *)&server, len);
+
+
+    signal(SIGALRM,send_ctl);
+    struct itimerval itimer;
+    itimer.it_interval.tv_sec = 0;
+    itimer.it_interval.tv_usec = 100000;
+    itimer.it_value.tv_sec = 3;
+    itimer.it_value.tv_usec = 0;
+    setitimer(ITIMER_REAL,&itimer,NULL);
+
+
+	initfootball();
+    noecho();
+    cbreak();
+    keypad(stdscr,TRUE);
+    curs_set(0);
 	while(1){
-		char buff[512] = {0};
+	/*	char buff[512] = {0};
 		scanf("%[^\n]s", buff);
 		getchar();
 		send(sockfd, buff, strlen(buff), 0);
 		printf("Send : %s\n" , buff);
 		bzero(buff, sizeof(buff));
 		recv(sockfd, buff, sizeof(buff), 0);
-		printf("Server : %s\n", buff);
+		printf("Server : %s\n", buff);*/
+        int ch = wgetch(Football);
+        w_gotoxy_putc(Football,7,7,ch);
+
+        if(ch =='w'||ch=='s'||ch=='a'||ch=='d')
+        {   strcpy(ctl_msg.name,request.name);
+            //printf("%s\n",ctl_msg.name);
+            ctl_msg.team = request.team;
+            ctl_msg.type = FT_CTL;
+            if(ch=='w'||ch=='s'){
+            ctl_msg.ctl.diry = ch;
+            }
+            else if(ch =='a'|| ch=='d'){
+                ctl_msg.ctl.dirx = ch;
+            }
+        }
+        
+        if(ch == 10){
+            send_chat();
+        }
+
+        //refresh();
+        //printw("%c",ch);
 	}
 	return 0;
 }

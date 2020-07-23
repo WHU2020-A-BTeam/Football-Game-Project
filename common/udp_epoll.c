@@ -2,6 +2,10 @@
 extern pthread_mutex_t bmutex;
 extern pthread_mutex_t rmutex;
 extern int bepollfd, repollfd;
+
+
+//#endif
+
 void add_event_ptr(int epollfd, int fd, int events, struct User *user){
 	struct epoll_event ev;
 	ev.events = events;
@@ -15,11 +19,24 @@ void add_event_ptr(int epollfd, int fd, int events, struct User *user){
 
 void del_event(int epollfd, int fd){
 	epoll_ctl(epollfd, EPOLL_CTL_DEL, fd, NULL);
-	return;
+    printf("  close!!!\n"); 
+    return;
 }
 
 extern int port;
 extern struct User *rteam, *bteam;
+
+int check_online(struct LogRequest *request){
+    for(int i=0; i < MAX; i++){
+        if(rteam[i].online == 1 && !strcmp(rteam[i].name,request->name)) return 1;
+        
+        if(bteam[i].online == 1 && !strcmp(bteam[i].name,request->name)) return 1;
+        
+    }
+        return 0;
+}
+
+
 int udp_connect(struct sockaddr_in *client){
 	int sockfd;
 	socklen_t len = sizeof(*client);
@@ -59,6 +76,13 @@ int udp_accept(int fd, struct User *user){
     /*response.Type = 0;
 	strcpy(response.msg, "Login, Please Wait......");
 	sendto(fd, (void *)&response, sizeof(response), 0, (struct sockaddr *)&client, len);*/
+    if(check_online(&request)){
+        response.Type = 1;
+        strcpy(response.msg,"you are already login in");
+        sendto(fd,(void*)&response, sizeof(response),0,(struct sockaddr *)&client ,len );
+        return -1;
+    }
+
 
 	while(1){
     	new_fd = udp_connect((struct sockaddr_in *)&client);
@@ -73,7 +97,9 @@ int udp_accept(int fd, struct User *user){
     strcpy(user->name, request.name);
     user->team = request.team;
     user->fd = new_fd;
-   
+    user->loc.x=4;
+    user->loc.y=4;
+    user->online =1;
     response.Type = 0;
     strcpy(response.msg, "Login Success, Enjoy Yourself");
     send(new_fd, (void *)&response, sizeof(response), 0);
