@@ -11,6 +11,7 @@ struct FootballMsg ctl_msg;
 
 
 int main(int argc, char **argv){
+    initscr();
 	int opt;
 	pthread_t heart_t;
 	struct LogRequest request;
@@ -102,10 +103,9 @@ int main(int argc, char **argv){
     connect(sockfd, (struct sockaddr *)&server, len);
 	pthread_create(&heart_t, NULL, heart_beat_client, &sockfd);
     
-    
     bzero(&ctl_msg, sizeof(ctl_msg));
     while(1){
-        char c = getchar();
+        int c = getch();
         switch (c){
             case 'a': 
                 ctl_msg.type = FT_CTL;
@@ -125,14 +125,14 @@ int main(int argc, char **argv){
                 ctl_msg.type = FT_CTL; 
                 ctl_msg.ctl.action = ACTION_DFL;
                 ctl_msg.ctl.dirx = 0; 
-                ctl_msg.ctl.diry = -1;
+                ctl_msg.ctl.diry = 1;
                 send_ctl();
                 break;
             case 'w': 
                 ctl_msg.type = FT_CTL; 
                 ctl_msg.ctl.action = ACTION_DFL;
                 ctl_msg.ctl.dirx = 0; 
-                ctl_msg.ctl.diry = 1;
+                ctl_msg.ctl.diry = -1;
                 send_ctl();
                 break;
             case ' '://空格：力度条
@@ -159,5 +159,6 @@ int main(int argc, char **argv){
                 break;
         }
 	}
+    endwin();
 	return 0;
 }

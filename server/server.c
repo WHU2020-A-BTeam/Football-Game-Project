@@ -25,16 +25,6 @@ int main(int argc, char **argv){
 	bzero(&court, sizeof(court));
 	bzero(&ball, sizeof(ball));
 	bzero(&ball_status, sizeof(ball_status));
-	//printf("yes\n");
-	/*char *str = get_conf_value(conf,"PORT");
-	char *str1 = get_conf_value(conf, "LINES");
-	char *str2 = get_conf_value(conf, "COLS");
-	//printf("yes\n");
-	if(str == NULL || str1 == NULL || str2 == NULL){
-		perror("get_conf_value()");
-		exit(1);
-	}*/
-	//printf("%s\n", str);
 	if(!port){ 
 		port = atoi(get_conf_value(conf, "PORT"));
 	}
@@ -44,11 +34,8 @@ int main(int argc, char **argv){
 	court.start.y = 3;
 	court.gate_width = 5;
 	court.gate_heigth = 10;
+	initfootball();
 
-//	initfootball();
-
-	//printf("%d\n", port);
-	//printf("%s %s\n", str1, str2);
 	if((listener = socket_create_udp(port)) < 0){
 		perror("socket_create_udp()");
 		exit(1);
@@ -67,11 +54,9 @@ int main(int argc, char **argv){
 	struct task_queue blueQueue;
 	task_queue_init(&redQueue, MAX, repollfd);
 	task_queue_init(&blueQueue, MAX, bepollfd);
-//	printf("yes\n");
 	pthread_create(&red_t, NULL, sub_reactor, (void *)&redQueue);
 	pthread_create(&blue_t, NULL, sub_reactor, (void *)&blueQueue);
 	pthread_create(&heart_t, NULL, heart_beat, NULL);
-//	printf("yes\n");
 	struct epoll_event ev, events[MAX];
 	ev.events = EPOLLIN;
 	ev.data.fd = listener;
@@ -82,8 +67,7 @@ int main(int argc, char **argv){
     }
 
 
-//    re_draw(1);
-/*	signal(14, re_draw);
+	signal(14, re_draw);
 
 	struct itimerval itimer;
 	itimer.it_interval.tv_sec = 0;
@@ -91,29 +75,27 @@ int main(int argc, char **argv){
 	itimer.it_value.tv_sec = 2;
 	itimer.it_value.tv_usec = 0;
 	setitimer(ITIMER_REAL, &itimer, NULL);
-*/
-//	printf("yes\n");
+
 	while(1){
 		int nfds = epoll_wait(epollfd, events, MAX, -1);
 		//printf("no connect\n");
-		if(nfds < 0) {
+/*		if(nfds < 0) {
 			perror("epoll_wait()");
 			exit(1);
-		}
+		}*/
 		//printf("nfds = %d\n", nfds);
 		for(int i = 0; i < nfds; ++i){
 			struct User user;
 			bzero(&user, sizeof(user));
 			if(events[i].data.fd == listener) {
-				printf("Connecting\n");
+		//		printf("Connecting\n");
 				int new_fd = udp_accept(listener, &user);
 
 				//printf("yes %d\n", new_fd);
 				if(new_fd > 0){
-					printf("New Connection!\n");
+		//			printf("New Connection!\n");
 					user.fd = new_fd;
 					add_to_sub_reactor(&user);
-					//add_event_ptr(epollfd, new_fd, EPOLLIN, &user);
 				}
 
 			}

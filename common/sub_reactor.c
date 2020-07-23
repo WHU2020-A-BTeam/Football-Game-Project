@@ -10,10 +10,10 @@ void *sub_reactor(void *arg){
 	struct epoll_event ev, events[MAX];
 	while(1) {
 		int nfds = epoll_wait(taskQueue->epollfd, events, MAX, -1);
-		if(nfds < 0) {
+/*		if(nfds < 0) {
 			perror("epoll_wait()");
 			exit(1);
-		}
+		}*/
 //		printf("nfds = %d\n", nfds);
 		for (int i = 0; i < nfds; i++){
 			struct User *user = (struct User *)events[i].data.ptr;
