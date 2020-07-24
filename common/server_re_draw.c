@@ -77,17 +77,18 @@ void re_draw_ball(){
             break;
         }
     }*/
-	if((v_x == 0) && (v_y == 0)){
+	/*if((v_x == 0) && (v_y == 0)){
 		a_x = 0;
 		a_y = 0;
-	}
-	else{
+	}*/
+	if(1){
 		v_x += a_x * 0.1;
 		v_y += a_y * 0.1;
 		//printf("%lf %lf\n", v_x, v_y);
 		double flag_x = v_x * ball_status.v.x;
 		double flag_y = v_y * ball_status.v.y;
 		if(flag_x <= 0 && flag_y <= 0){
+			//printf("!stop!\n");
 			v_x = 0;
 			v_y = 0;
 			a_x = 0;
@@ -107,14 +108,15 @@ void re_draw_ball(){
 		ball.y += v_y * 0.1 - 0.5 * a_y * 0.01;
 	
 	
-		if(force_to_stop(rteam, ball.x, ball.y) == 1 || force_to_stop(bteam, ball.x, ball.y) == 1){
+		/*if(force_to_stop(rteam, ball.x, ball.y) == 1 || force_to_stop(bteam, ball.x, ball.y) == 1){
+			printf("stop!\n");
 			ball.x = last_x;
 			ball.y = last_y;
 			v_x = 0;
 			v_y = 0;
 			a_x = 0;
 			a_y = 0;
-		}
+		}*/
 		if (ball.x >= court.width){
 			//printf("sss\n");
       		ball.x = court.width - 1;
