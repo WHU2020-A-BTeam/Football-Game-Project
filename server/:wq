@@ -102,7 +102,7 @@ void re_draw_ball(){
 		}
 		else if(flag_x > 0.1 && flag_y <= 0){
 			v_y = 0;
-			a_y = 0;
+			a_x = 0;
 		}
 	
 		ball.x += v_x * 0.1 - 0.5 * a_x * 0.01;
