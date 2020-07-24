@@ -80,6 +80,7 @@ void initfootball() {
     Score = create_newwin(20, 7,  court.start.x + court.width + 2 , court.start.y + court.heigth + 1);
     Write = create_newwin(court.width + 4 + 20, 5,  court.start.x - 2, court.start.y + 1 + court.heigth + 7);
     box(Write, 0, 0);
+	box(Football, 0, 0);
     wattron(Football, COLOR_PAIR(6));
     w_gotoxy_putc(Football, ball.x, ball.y, 'o');
 }

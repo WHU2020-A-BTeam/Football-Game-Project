@@ -213,8 +213,8 @@ void re_draw_team(struct User *team){
 }
 
 void re_draw(int m){
-	
-
+	box(Football_t, 0, 0);
+	box(Football, 0, 0);
 
 	re_draw_ball();
 	re_draw_team(rteam);

@@ -31,7 +31,7 @@ int can_kick(struct Point *loc, int strength){
 		ball_status.a.x = ((ball.x - loc->x) > 0 ? -1 : 1) * (a_speed_ * cos_value);
 
 		ball_status.a.y = ((ball.y - loc->y) > 0 ? -1 : 1) * (a_speed_ * sin_value);
-		//printf("%lf %lf\n", cos_value, sin_value);
+		printf("%lf %lf\n", cos_value, sin_value);
 		return 1;
 	}
 	//不能踢，返回0
