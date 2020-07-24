@@ -50,6 +50,9 @@
 #include "server_re_draw.h"
 #include "ball_status.h"
 #include "send_ctl.h"
+#include "show_strength.h"
+#include "server_exit"
+
 #define MAX 20
 #define NWORKER 5
 #endif

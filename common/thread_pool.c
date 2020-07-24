@@ -23,7 +23,7 @@ void do_with(struct User *user) {
 				user->loc.x += msg.ctl.dirx;
 				user->loc.y += msg.ctl.diry;
 			} else if (msg.ctl.action & ACTION_KICK){
-				printf("kick!\n");
+				//printf("kick!\n");
                 //KICK
 			}
 			else if (msg.ctl.action & ACTION_CARRY){

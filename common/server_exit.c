@@ -2,6 +2,7 @@
 
 void server_exit(int signum) {
 	struct FootballMsg msg;
+    bzero(&msg, sizeof(msg));
 	 msg.type = FT_FIN;
 	 for (int i = 0 ; i < MAX; i++){
 		if(rteam[i].online) send(rteam[i].fd, (void *)&msg, sizeof(msg), 0);
