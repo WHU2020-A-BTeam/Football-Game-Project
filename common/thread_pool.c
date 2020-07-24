@@ -40,13 +40,15 @@ void do_with(struct User *user) {
 				if(ret == 1){
 					strcpy(ball_status.name, user->name);
 					w_gotoxy_puts(Message, 0, 2, ball_status.name);
+					ball_status.by_team = user->team;
 				}
 				
 				//printf("carry\n");
                 //CARRY
 			}
             else if (msg.ctl.action & ACTION_STOP){
-                printf("stop!\n");
+				int ret = can_stop(&(user->loc));
+                //printf("stop!\n");
             }
 		}
 		//..

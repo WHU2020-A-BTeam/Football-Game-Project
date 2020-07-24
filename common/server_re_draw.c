@@ -40,12 +40,12 @@ void re_draw_ball(){
 	int ret = -1;
 	if(ball_status.if_carry == 1){
 		if((ret = search_player(rteam, ball_status.name)) != -1){
-			ball.x = rteam[ret].loc.x - op.x;
-			ball.y = rteam[ret].loc.y - op.y;
+			ball.x = rteam[ret].loc.x - op.x - 2;
+			ball.y = rteam[ret].loc.y - op.y - 1;
 		}
 		if((ret = search_player(bteam, ball_status.name)) != -1){
-			ball.x = bteam[ret].loc.x - op.x;
-			ball.y = bteam[ret].loc.y - op.y;
+			ball.x = bteam[ret].loc.x - op.x - 2;
+			ball.y = bteam[ret].loc.y - op.y - 1;
 		}
 		ball_status.a.x = 0;
 		ball_status.a.y = 0;
@@ -182,7 +182,11 @@ void re_draw_ball(){
     init_pair(5, COLOR_CYAN, COLOR_BLACK);//青色
     init_pair(6, COLOR_BLUE, COLOR_BLACK);//蓝色
     init_pair(7, COLOR_MAGENTA, COLOR_BLACK); //洋红
-    wattron(Football, COLOR_PAIR(rand()%7));
+	if(ball_status.by_team == 1){
+    	wattron(Football, COLOR_PAIR(6));
+	} else {
+		wattron(Football, COLOR_PAIR(7));
+	}
     w_gotoxy_putc(Football, ball.x, ball.y, 'o');
 //    w_gotoxy_puts(Football, ball.x, ball.y + 2, "hahaha");
 }
@@ -214,13 +218,13 @@ void re_draw_player(int team, char *name, struct Point *loc){
     //pnt = *loc;
 
 	if(team == 1){
-		wattron(Football, COLOR_PAIR(6));
-		w_gotoxy_putc(Football, loc->x, loc->y, 'K');
+		wattron(Football_t, COLOR_PAIR(6));
+		w_gotoxy_putc(Football_t, loc->x, loc->y, 'K');
 		//w_gotoxy_puts(Football_t, loc->x, loc->y + 1, name);
 	}
 	else{
-		wattron(Football, COLOR_PAIR(7));
-		w_gotoxy_putc(Football, loc->x, loc->y, 'K');
+		wattron(Football_t, COLOR_PAIR(7));
+		w_gotoxy_putc(Football_t, loc->x, loc->y, 'K');
 		//w_gotoxy_puts(Football_t, loc->x, loc->y + 1, name);
 	}
 
