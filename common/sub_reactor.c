@@ -18,7 +18,7 @@ void *sub_reactor(void *arg){
 		//printf("nfds = %d\n", nfds);
 		for (int i = 0; i < nfds; i++){
 			struct User *user = (struct User *)events[i].data.ptr;
-			//printf("name = %s\n", user->name);
+	//		printf("name = %s\n", user->name);
 			if (events[i].events & EPOLLIN) {
 				task_queue_push(taskQueue, user);
 			}

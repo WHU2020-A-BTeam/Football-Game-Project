@@ -1,8 +1,8 @@
 #include "head.h"
 extern struct User *rteam;
 extern struct User *bteam;
-
-
+extern char talk[5][50];
+extern WINDOW *Message;
 int find(struct User * team,char * name){
     for(int i=0; i<MAX; i++){
         if(team[i].online){
@@ -20,12 +20,11 @@ void do_with(struct User *user) {
 		bzero(buff, sizeof(buff));*/
     struct FootBallMsg msg;
     recv(user->fd, (void*)&msg, sizeof(msg), 0);
+   // printf("%d\n",msg.type);
     if (msg.type & FT_FIN){
 
     }
-    else if (msg.type & FT_MSG){
-
-    } else if(msg.type & FT_WALL){
+     else if(msg.type & FT_WALL){
 
     }else if(msg.type & FT_ACK){
         
@@ -49,8 +48,21 @@ void do_with(struct User *user) {
         else if(msg.ctl.diry == 's' ){
             team[num].loc.y++;
         }
-
     }
+    else if(msg.type & FT_MSG){
+//        printf("ttttt\n");
+        for(int i=1;i<5; i++){
+            strcpy(talk[i-1],talk[i]);
+        }
+        strcpy(talk[4],user->name);
+        strcat(talk[4],": ");
+         strcat(talk[4] , msg.msg);
+         werase(Message);
+         //box(Message, 1, 1);
+        for(int i=4; i>=0;i--){
+            w_gotoxy_puts(Message, 2,i,talk[i]);
+        }
+       }
 }
 
 

@@ -7,6 +7,7 @@ struct Bpoint ball;
 pthread_mutex_t bmutex = PTHREAD_MUTEX_INITIALIZER;
 pthread_mutex_t rmutex = PTHREAD_MUTEX_INITIALIZER;
 char data_stream[20];
+char talk[5][50];
 int main(int argc, char **argv){
 	//printf("yes\n");
 	int opt, listener, epollfd;

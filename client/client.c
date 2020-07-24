@@ -108,7 +108,7 @@ int main(int argc, char **argv){
     noecho();
     cbreak();
     keypad(stdscr,TRUE);
-    curs_set(0);
+    //curs_set(0);
 	while(1){
 	/*	char buff[512] = {0};
 		scanf("%[^\n]s", buff);
@@ -118,9 +118,8 @@ int main(int argc, char **argv){
 		bzero(buff, sizeof(buff));
 		recv(sockfd, buff, sizeof(buff), 0);
 		printf("Server : %s\n", buff);*/
-        int ch = wgetch(Football);
+        char ch = wgetch(Football);
         w_gotoxy_putc(Football,7,7,ch);
-
         if(ch =='w'||ch=='s'||ch=='a'||ch=='d')
         {   strcpy(ctl_msg.name,request.name);
             //printf("%s\n",ctl_msg.name);
@@ -132,12 +131,11 @@ int main(int argc, char **argv){
             else if(ch =='a'|| ch=='d'){
                 ctl_msg.ctl.dirx = ch;
             }
+        } 
+       else if(ch == 10){
+           send_chat();
         }
         
-        if(ch == 10){
-            send_chat();
-        }
-
         //refresh();
         //printw("%c",ch);
 	}
