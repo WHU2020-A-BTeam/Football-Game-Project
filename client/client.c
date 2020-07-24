@@ -1,4 +1,5 @@
 #include "../common/head.h"
+
 struct Map court;
 struct Bpoint ball;
 pthread_mutex_t bmutex, rmutex;
@@ -102,7 +103,7 @@ int main(int argc, char **argv){
     
     connect(sockfd, (struct sockaddr *)&server, len);
 	pthread_create(&heart_t, NULL, heart_beat_client, &sockfd);
-    
+    initfootball() ;
     bzero(&ctl_msg, sizeof(ctl_msg));
     while(1){
         int c = getch();
@@ -136,6 +137,9 @@ int main(int argc, char **argv){
                 send_ctl();
                 break;
             case ' '://空格：力度条
+                ctl_msg.type = FT_CTL;
+                ctl_msg.ctl.action = ACTION_KICK;
+                send_ctl();
                 break;
             case 'j'://停球
                 ctl_msg.type = FT_CTL;
