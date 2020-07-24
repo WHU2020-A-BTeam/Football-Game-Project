@@ -39,7 +39,7 @@ int main(int argc, char **argv){
 	court.start.y = 3;
 	court.gate_width = 5;
 	court.gate_heigth = 10;
-	//initfootball();
+	initfootball();
 
 	if((listener = socket_create_udp(port)) < 0){
 		perror("socket_create_udp()");
