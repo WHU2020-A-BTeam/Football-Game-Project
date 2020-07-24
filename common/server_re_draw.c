@@ -6,7 +6,8 @@ extern struct BallStatus ball_status;
 extern struct Bpoint ball;
 extern struct Map court;
 extern struct Point op;
-struct Point pnt = {0,0};
+extern struct Score score;
+//struct Point pnt = {0,0};
 
 int search_player(struct User *team, char *name){
 	for(int i = 0; i < MAX; i++){
@@ -18,9 +19,15 @@ int search_player(struct User *team, char *name){
 	}
 	return -1;
 }
+void re_draw_gate(){
+    for (int i = court.heigth/2 + 1 - 4; i <= court.heigth/2 + 1 + 4; i++){
+        mvwprintw(Football_t, i, 1, "x");
+        mvwprintw(Football_t, i, court.width + 2, "x");
+    }
+}
 
 void re_draw_ball(){
-    w_gotoxy_putc(Football, (int )ball.x, (int)ball.y, ' ');
+    //w_gotoxy_putc(Football, (int )ball.x, (int)ball.y, ' ');
     double a_x = ball_status.a.x;
     double a_y = ball_status.a.y;
     double v_x = ball_status.v.x;
@@ -29,58 +36,6 @@ void re_draw_ball(){
 	double last_y = ball.y;
     double time = 0.1;  
     char buff[512] = {0};
-    /*while(1){
-        itime += 0.001;//间隔时间为0.001s
-        if (itime == time){
-            break;
-        }
-        v_x = v_x + a_x * 0.001;
-        v_y = v_y + a_y * 0.001;
-    
-        if (fabs(v_x) <= 1 && fabs(v_y - 0) <= 1){
-            a_x = a_y = 0;
-            v_x = v_y = 0;
-            break;
-        }
-        else if (fabs(v_x) <= 1 && v_y > 0){
-            a_x = 0;
-            v_x = 0;
-        }
-        else if (v_x > 0 && v_y <= 0){
-            a_y = v_y = 0;
-        }
-        ball.x += v_x * 0.001 - 0.5 * a_x * 0.001 * 0.001;
-        ball.y += v_y *0.001 -0.5 * a_y *0.001*0.001;
-        
-        if (ball.x > court.width - 1){
-            ball.x = court.width - 1;
-            a_x = a_y = 0;
-            v_x = v_y = 0;
-            break;
-        }
-        if (ball.x < 1){
-            ball.x = 1;
-            a_x = a_y = 0;
-            v_x = v_y = 0;
-            break;
-        }
-        if (ball.y > court.heigth-1){
-            ball.y = court.heigth - 1;
-            a_x = a_y = 0;
-            v_x = v_y = 0;
-            break;
-        }
-        if (ball.y < 1){
-            ball.y = 1;
-            a_x = a_y = 0;
-            v_x = v_y = 0;
-            break;
-        }
-    }*/
-	/*if((v_x == 0) && (v_y == 0)){
-		a_x = 0;
-		a_y = 0;
-	}*/
 
 	int ret = -1;
 	if(ball_status.if_carry == 1){
@@ -160,7 +115,54 @@ void re_draw_ball(){
         	v_x = v_y = 0;
         }
 	}
-
+	if (ball.x >= court.width - 0.001){
+    	if (ball.y >= court.heigth / 2 - 4 && ball.y <= court.heigth / 2 + 4){
+       		score.red++;
+      		ball.x = court.width - 3;
+        	ball.y = court.heigth / 2;
+          	struct FootballMsg msg;
+         	msg.type = FT_WALL;
+        	sprintf(msg.msg, "%s of %s team, get 1 score", ball_status.name, ball_status.by_team?"blue":"red");
+//                send_all(&msg);
+         	w_gotoxy_puts(Message, 0, 2, msg.msg);
+        }
+       	else{
+            ball.x = court.width - 1;
+    	}
+   		a_x = a_y = 0;
+      	v_x = v_y = 0;
+		ball_status.if_carry = 0;
+ 	}
+    if (ball.x <= 0.001){
+      	if (ball.y >= court.heigth / 2 - 4 && ball.y <= court.heigth / 2 + 4){
+       		score.blue++;
+      		ball.x = 2.0;
+    		ball.y = court.heigth / 2;
+       		struct FootballMsg msg;
+      		msg.type = FT_WALL;
+        	sprintf(msg.msg, "%s of %s team, get 1 score", ball_status.name, ball_status.by_team?"blue":"red");
+//                send_all(&msg);
+			w_gotoxy_puts(Message, 0, 2, msg.msg);
+  		}
+		else{
+  			ball.x = 1;
+       	}
+		a_x = a_y = 0;
+    	v_x = v_y = 0;
+		ball_status.if_carry = 0;
+   	}
+	if(ball.y <= 0){
+		ball.y = 0;
+		v_x = v_y = 0;
+		a_x = a_y = 0;
+		ball_status.if_carry = 0;
+	}
+	if(ball.y >= court.heigth){
+		ball.y = court.heigth - 1;
+		v_x = v_y = 0;
+		a_x = a_y = 0;
+		ball_status.if_carry = 0;
+	}
     ball_status.a.x = a_x;
     ball_status.a.y = a_y;
     ball_status.v.x = v_x;
@@ -189,7 +191,7 @@ void re_draw_ball(){
 void re_draw_player(int team, char *name, struct Point *loc){
 
 	
-	w_gotoxy_putc(Football, pnt.x, pnt.y, ' ');
+	//w_gotoxy_putc(Football, pnt.x, pnt.y, ' ');
 	//w_gotoxy_puts(Football_t, pnt.x, pnt.y + 1, "               ");  
     if (!has_colors() || start_color() == ERR) {
         endwin();
@@ -209,7 +211,7 @@ void re_draw_player(int team, char *name, struct Point *loc){
     init_pair(11, COLOR_BLACK, COLOR_BLUE);
     init_pair(12, COLOR_BLACK, COLOR_YELLOW);
     
-    pnt = *loc;
+    //pnt = *loc;
 
 	if(team == 1){
 		wattron(Football, COLOR_PAIR(6));
@@ -234,11 +236,16 @@ void re_draw_team(struct User *team){
 }
 
 void re_draw(int m){
+
+	werase(Football_t);
+
 	box(Football_t, 0, 0);
 	box(Football, 0, 0);
 
 	re_draw_ball();
 	re_draw_team(rteam);
 	re_draw_team(bteam);
+	re_draw_gate();
+	wrefresh(Football_t);
 }
 

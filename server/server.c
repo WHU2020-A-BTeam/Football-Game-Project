@@ -5,6 +5,7 @@ struct User *rteam, *bteam;
 struct Map court;
 struct Bpoint ball;
 struct Point op;
+struct Score score;
 extern struct BallStatus ball_status;
 pthread_mutex_t bmutex = PTHREAD_MUTEX_INITIALIZER;
 pthread_mutex_t rmutex = PTHREAD_MUTEX_INITIALIZER;
