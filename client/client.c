@@ -150,6 +150,7 @@ int main(int argc, char **argv){
             case 'l'://带球
                 ctl_msg.type = FT_CTL;
                 ctl_msg.ctl.action = ACTION_CARRY;
+				send(sockfd, (void *)&ctl_msg, sizeof(ctl_msg), 0);
                 break;
             case 'n'://显示姓名
                 break;

@@ -1,5 +1,7 @@
 #include "head.h"
 
+extern struct BallStatus ball_status;
+extern WINDOW *Message;
 void do_with(struct User *user) {
 		struct FootballMsg msg;
 		bzero(&msg, sizeof(msg));
@@ -24,11 +26,23 @@ void do_with(struct User *user) {
 				user->loc.y += msg.ctl.diry;
 			} else if (msg.ctl.action & ACTION_KICK){
 				int ret = can_kick(&(user->loc), 1);
+				if(ret == 1){
+					ball_status.by_team = user->team;
+					bzero(ball_status.name,sizeof(ball_status.name));
+					ball_status.if_carry = 0;
+				}
 				//printf("kick!\n");
                 //KICK
 			}
 			else if (msg.ctl.action & ACTION_CARRY){
-				printf("carry\n");
+				
+				int ret = can_carry(&(user->loc));
+				if(ret == 1){
+					strcpy(ball_status.name, user->name);
+					w_gotoxy_puts(Message, 0, 2, ball_status.name);
+				}
+				
+				//printf("carry\n");
                 //CARRY
 			}
             else if (msg.ctl.action & ACTION_STOP){

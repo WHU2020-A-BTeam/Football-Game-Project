@@ -4,6 +4,7 @@ int bepollfd, repollfd;
 struct User *rteam, *bteam;
 struct Map court;
 struct Bpoint ball;
+struct Point op;
 extern struct BallStatus ball_status;
 pthread_mutex_t bmutex = PTHREAD_MUTEX_INITIALIZER;
 pthread_mutex_t rmutex = PTHREAD_MUTEX_INITIALIZER;
@@ -25,7 +26,7 @@ int main(int argc, char **argv){
 	bzero(&court, sizeof(court));
 	bzero(&ball, sizeof(ball));
 	bzero(&ball_status, sizeof(ball_status));
-	
+	bzero(&op, sizeof(op));
 	ball.x = 20;
 	ball.y = 20;
 
@@ -38,7 +39,7 @@ int main(int argc, char **argv){
 	court.start.y = 3;
 	court.gate_width = 5;
 	court.gate_heigth = 10;
-	initfootball();
+	//initfootball();
 
 	if((listener = socket_create_udp(port)) < 0){
 		perror("socket_create_udp()");
@@ -97,7 +98,7 @@ int main(int argc, char **argv){
 
 				//printf("yes %d\n", new_fd);
 				if(new_fd > 0){
-		//			printf("New Connection!\n");
+					printf("New Connection!\n");
 					user.fd = new_fd;
 					add_to_sub_reactor(&user);
 				}

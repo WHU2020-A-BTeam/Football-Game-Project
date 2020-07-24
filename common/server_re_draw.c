@@ -1,22 +1,22 @@
 #include "head.h"
 
 extern struct User *rteam, *bteam;
-extern WINDOW *Football, *Football_t;
+extern WINDOW *Football, *Football_t, *Message;
 extern struct BallStatus ball_status;
 extern struct Bpoint ball;
 extern struct Map court;
-
+extern struct Point op;
 struct Point pnt = {0,0};
 
-int force_to_stop(struct User *team, int x, int y){
+int search_player(struct User *team, char *name){
 	for(int i = 0; i < MAX; i++){
 		if(team[i].online == 1){
-			if(x == team[i].loc.x && y == team[i].loc.y){
-				return 1;
+			if(strcmp(name, team[i].name) == 0){
+				return i;
 			}
 		}
 	}
-	return 0;
+	return -1;
 }
 
 void re_draw_ball(){
@@ -81,11 +81,27 @@ void re_draw_ball(){
 		a_x = 0;
 		a_y = 0;
 	}*/
-	if(1){
+
+	int ret = -1;
+	if(ball_status.if_carry == 1){
+		if((ret = search_player(rteam, ball_status.name)) != -1){
+			ball.x = rteam[ret].loc.x - op.x;
+			ball.y = rteam[ret].loc.y - op.y;
+		}
+		if((ret = search_player(bteam, ball_status.name)) != -1){
+			ball.x = bteam[ret].loc.x - op.x;
+			ball.y = bteam[ret].loc.y - op.y;
+		}
+		ball_status.a.x = 0;
+		ball_status.a.y = 0;
+		ball_status.v.x = 0;
+		ball_status.v.x = 0;
+	}
+	else{
 		v_x += a_x * 0.1;
 		v_y += a_y * 0.1;
 		//printf("%lf %lf\n", v_x, v_y);
-		sprintf(buff, "speed : %lf %lf aspeed : %lf %lf", v_x, v_y, a_x, a_y);
+		sprintf(buff, "speed : %lf %lf aspeed : %lf %lf name : %s", v_x, v_y, a_x, a_y, ball_status.name);
 		w_gotoxy_puts(Message, 0, 1, buff);
 		double flag_x = v_x * ball_status.v.x;
 		double flag_y = v_y * ball_status.v.y;
@@ -212,6 +228,7 @@ void re_draw_team(struct User *team){
 	for (int i = 0; i < MAX ; i++){
 		if(team[i].online == 1){
 			re_draw_player(team[i].team, team[i].name, &team[i].loc);
+			w_gotoxy_puts(Message, 0, 3, team[i].name);
 		}
 	}
 }

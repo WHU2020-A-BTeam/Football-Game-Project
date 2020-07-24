@@ -1,4 +1,5 @@
 #include "head.h"
+extern struct Point op;
 extern struct Bpoint ball;
 extern struct BallStatus ball_status;
 extern WINDOW *Message;
@@ -45,6 +46,18 @@ int can_kick(struct Point *loc, int strength){
 		return 1;
 	}
 	//不能踢，返回0
+	return 0;
+}
+
+int can_carry(struct Point *loc){
+	ball.x = (double)(int)ball.x;
+	ball.y = (double)(int)ball.y;
+	if(abs(loc->x - ball.x) <= 2 && abs(loc->y - ball.y) <= 2){
+		op.x = loc->x - ball.x;
+		op.y = loc->y - ball.y;
+		ball_status.if_carry = 1;
+		return 1;
+	}
 	return 0;
 }
 
