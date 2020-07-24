@@ -8,6 +8,10 @@ pthread_mutex_t bmutex = PTHREAD_MUTEX_INITIALIZER;
 pthread_mutex_t rmutex = PTHREAD_MUTEX_INITIALIZER;
 char data_stream[20];
 char talk[5][50];
+ struct Point op;
+ struct Bpoint ball;
+
+extern struct BallStatus ball_status;
 int main(int argc, char **argv){
 	//printf("yes\n");
 	int opt, listener, epollfd;
@@ -61,6 +65,10 @@ int main(int argc, char **argv){
     itimer.it_value.tv_usec = 0;
     setitimer(ITIMER_REAL,&itimer,NULL);
 
+
+    signal(SIGINT, server_exit);
+
+
     if((listener = socket_create_udp(port)) < 0){
 		perror("socket_create_udp()");
 		exit(1);
@@ -87,7 +95,7 @@ int main(int argc, char **argv){
 //	pthread_create(&heartbeat, NULL, heart_beat, NULL);
     make_non_block(epollfd);
 
-struct epoll_event ev, events[MAX];
+    struct epoll_event ev, events[MAX];
 	ev.events = EPOLLIN;
 	ev.data.fd = listener;
 

@@ -1,1 +1,1 @@
-gcc client.c ../common/common.c  ../common/send_ctl.c ../common/send_chat.c   ../common/game_ui.c -I ../common/ -lpthread -lncurses
+gcc client.c ../common/common.c    ../common/client_exit.c ../common/client_recv.c  ../common/send_ctl.c ../common/send_chat.c   ../common/game_ui.c -I ../common/ -lpthread -lncurses

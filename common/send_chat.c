@@ -12,7 +12,7 @@ extern WINDOW *Football;
 extern struct FootBallMsg chat_msg;
 void send_chat(){
     echo();
-    keypad(stdscr,TRUE);
+    //keypad(stdscr,TRUE);
    // nocbreak();
     bzero(chat_msg.msg, sizeof(chat_msg.msg));
     w_gotoxy_puts(Write,1,1,"Input Message: ");

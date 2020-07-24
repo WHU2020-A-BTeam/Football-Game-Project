@@ -33,8 +33,8 @@ struct Point {
 };
 
 struct Bpoint {
-	int x;
-	int y;
+	double x;
+	double y;
 };
 
 struct User{
@@ -82,7 +82,9 @@ struct BallStatus {
 	struct Aspeed a;
 	int t;
 	int who;
+    int by_team;
 	char name[20];
+    int if_carry;
 	//pthread_mutex_t mutex;
 };
 struct Ctl{    

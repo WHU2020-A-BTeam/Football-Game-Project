@@ -3,6 +3,9 @@ extern struct User *rteam;
 extern struct User *bteam;
 extern char talk[5][50];
 extern WINDOW *Message;
+extern int bepollfd;
+extern int repollfd;
+
 int find(struct User * team,char * name){
     for(int i=0; i<MAX; i++){
         if(team[i].online){
@@ -22,13 +25,28 @@ void do_with(struct User *user) {
     recv(user->fd, (void*)&msg, sizeof(msg), 0);
    // printf("%d\n",msg.type);
     if (msg.type & FT_FIN){
-
+       if(msg.team == 0){
+        int num =find(rteam,msg.name);
+        rteam[num].online = 0;
+          // printf("zzqzqzq\n");
+        del_event(repollfd, rteam[num].fd);
+        close(rteam[num].fd); 
+       }
+        else{
+           int num =find(bteam,msg.name);
+        bteam[num].online = 0;
+        del_event(bepollfd, bteam[num].fd);
+        close( bteam[num].fd ); 
+        }
     }
      else if(msg.type & FT_WALL){
 
     }else if(msg.type & FT_ACK){
         
     }else if(msg.type & FT_CTL){
+
+        if(msg.ctl.action & ACTION_DFL)
+        {
         struct User * team=NULL;
         if(msg.team == 0) team=rteam;
         else team =bteam;
@@ -47,8 +65,27 @@ void do_with(struct User *user) {
         }
         else if(msg.ctl.diry == 's' ){
             team[num].loc.y++;
+            }
         }
-    }
+
+        else if (msg.ctl.action & ACTION_KICK){
+                            int ret = can_kick(&(user->loc), 1);
+            if(ret == 1){
+                                    ball_status.by_team = user->team;
+                                    bzero(ball_status.name,sizeof(ball_status.name));
+                                    ball_status.if_carry = 0;
+                                
+                        }
+           }
+        else if (msg.ctl.action & ACTION_CARRY){
+                            int ret = can_carry(&(user->loc));
+            if(ret == 1){
+                                    strcpy(ball_status.name, user->name);
+                                    w_gotoxy_puts(Message, 0, 2, ball_status.name);
+                                
+                      }
+            }
+         }
     else if(msg.type & FT_MSG){
 //        printf("ttttt\n");
         for(int i=1;i<5; i++){
@@ -63,7 +100,7 @@ void do_with(struct User *user) {
             w_gotoxy_puts(Message, 2,i,talk[i]);
         }
        }
-}
+    }
 
 
 void task_queue_init(struct task_queue *taskQueue, int size, int epollfd){

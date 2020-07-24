@@ -19,7 +19,7 @@ void add_event_ptr(int epollfd, int fd, int events, struct User *user){
 
 void del_event(int epollfd, int fd){
 	epoll_ctl(epollfd, EPOLL_CTL_DEL, fd, NULL);
-    printf("  close!!!\n"); 
+   // printf("  close!!!\n"); 
     return;
 }
 
@@ -82,8 +82,6 @@ int udp_accept(int fd, struct User *user){
         sendto(fd,(void*)&response, sizeof(response),0,(struct sockaddr *)&client ,len );
         return -1;
     }
-
-
 	while(1){
     	new_fd = udp_connect((struct sockaddr_in *)&client);
 		if(new_fd > 0){
@@ -102,9 +100,9 @@ int udp_accept(int fd, struct User *user){
     user->online =1;
     response.Type = 0;
     strcpy(response.msg, "Login Success, Enjoy Yourself");
-    send(new_fd, (void *)&response, sizeof(response), 0);
-    
+    send(new_fd, (void *)&response, sizeof(response), 0); 
     return new_fd; 
+
 }
 int find_sub(struct User *team){
 	for(int i =0 ; i < MAX; i++){
@@ -133,6 +131,4 @@ void add_to_sub_reactor(struct User *user){
 		add_event_ptr(bepollfd, team[sub].fd, EPOLLIN | EPOLLET, &team[sub]);
 	else 
 		add_event_ptr(repollfd, team[sub].fd, EPOLLIN | EPOLLET, &team[sub]);
-
-
 }

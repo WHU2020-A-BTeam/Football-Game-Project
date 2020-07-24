@@ -50,10 +50,12 @@
 #include"show_data_stream.h"
 #include "send_ctl.h"
 #include"send_chat.h"
-
-
-
-
+#include "server_exit.h"
+#include"client_recv.h"
+#include"server_send_all.h"
+#include"client_exit.h"
+#include"ball_status.h"
+#include<math.h>
 
 #define MAX 20
 #define NWORKER 5

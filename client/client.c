@@ -9,11 +9,9 @@ char *conf = "./football.conf";
 int sockfd = -1;
 struct FootBallMsg ctl_msg;
 struct FootBallMsg chat_msg;
-
-
+struct LogRequest request;
 int main(int argc, char **argv){
 	int opt;
-	struct LogRequest request;
 	struct LogResponse response;
 	bzero(&request, sizeof(request));
 	bzero(&response, sizeof(response));
@@ -93,6 +91,9 @@ int main(int argc, char **argv){
 	}
 	//printf("Server : %s\n", response.msg);
 	connect(sockfd, (struct sockaddr *)&server, len);
+    
+    pthread_t client;
+    pthread_create(&client,NULL,client_recv,NULL);
 
 
     signal(SIGALRM,send_ctl);
@@ -102,6 +103,12 @@ int main(int argc, char **argv){
     itimer.it_value.tv_sec = 3;
     itimer.it_value.tv_usec = 0;
     setitimer(ITIMER_REAL,&itimer,NULL);
+
+    signal(SIGINT,client_exit);
+
+    //struct FootBallMsg ack;
+    //ack.type =FT_ACK;
+    //send(sockfd,(void*)&ack,sizeof(ack),0);
 
 
 	initfootball();
@@ -125,6 +132,7 @@ int main(int argc, char **argv){
             //printf("%s\n",ctl_msg.name);
             ctl_msg.team = request.team;
             ctl_msg.type = FT_CTL;
+            ctl_msg.ctl.action =ACTION_DFL;
             if(ch=='w'||ch=='s'){
             ctl_msg.ctl.diry = ch;
             }
@@ -136,7 +144,24 @@ int main(int argc, char **argv){
            send_chat();
         }
         
+        else if(ch =='k'){
+                            ctl_msg.type = FT_CTL;
+                            ctl_msg.ctl.action = ACTION_KICK;
+                            send(sockfd, (void *)&ctl_msg, sizeof(ctl_msg), 0);
+        }
+        else if(ch =='l'){
+                            ctl_msg.type = FT_CTL;
+                            ctl_msg.ctl.action = ACTION_CARRY;
+                            send(sockfd, (void *)&ctl_msg, sizeof(ctl_msg), 0);
+                         //   break;
+        }
         //refresh();
+        else if(ch =='j'){
+                            ctl_msg.type = FT_CTL;
+                            ctl_msg.ctl.action = ACTION_STOP;
+                            send(sockfd, (void *)&ctl_msg, sizeof(ctl_msg), 0);
+                         //   break;
+        }
         //printw("%c",ch);
 	}
 	return 0;
