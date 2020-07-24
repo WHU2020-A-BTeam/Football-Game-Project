@@ -36,6 +36,7 @@
 #include <unistd.h>
 #include <string.h>
 #include <sys/epoll.h>
+#include <math.h>
 #include "datatype.h"
 #include "common.h"
 #include "udp_epoll.h"

@@ -25,6 +25,10 @@ int main(int argc, char **argv){
 	bzero(&court, sizeof(court));
 	bzero(&ball, sizeof(ball));
 	bzero(&ball_status, sizeof(ball_status));
+	
+	ball.x = 20;
+	ball.y = 20;
+
 	if(!port){ 
 		port = atoi(get_conf_value(conf, "PORT"));
 	}

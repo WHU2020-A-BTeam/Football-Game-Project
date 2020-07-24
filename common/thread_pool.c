@@ -19,11 +19,12 @@ void do_with(struct User *user) {
 		}
 		else if (msg.type & FT_CTL){
 			if(msg.ctl.action & ACTION_DFL) {
-//                printf("move!\n");
+                //printf("move!\n");
 				user->loc.x += msg.ctl.dirx;
 				user->loc.y += msg.ctl.diry;
 			} else if (msg.ctl.action & ACTION_KICK){
-				printf("kick!\n");
+				int ret = can_kick(&(user->loc), 1);
+				//printf("kick!\n");
                 //KICK
 			}
 			else if (msg.ctl.action & ACTION_CARRY){

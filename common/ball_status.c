@@ -11,33 +11,24 @@ double sin_cal(double x, double y){
 }
 
 int can_kick(struct Point *loc, int strength){
-	const double a_speed = 4.0;;
-
+	const double a_speed = 40.0;
+	const double a_speed_ = 10.0;
+	double cos_value, sin_value;
 	//if(loc->x == ball.x || loc->y == ball.y){
 	if(abs(loc->x - ball.x) <= 2 && abs(loc->y - ball.y) <= 2){
-		if(loc->x == ball.x){//同在垂直线上，力沿y轴方向
-			ball_status.a.y = ((ball.y - loc->y) > 0 ? 1 : -1) * a_speed * strength;
-			ball_status.a.x = 0;
-			//ball_status.v.y = ball_status.a.y * 0.2;
-			//ball_status.v.x = 0;
-		}
-		else if (loc->y == ball.y){//同在水平线上，力沿x轴方向
-			ball_status.a.x = ((ball.x - loc->x) > 0 ? 1 : -1) * a_speed * strength;
-			ball_status.a.y = 0;
-		}
-		else {
-			cos_value = cos_cal(abs(loc->x - ball.x, abs(loc->y - ball.y)));//计算余弦
-			sin_value = sin_cal(abs(loc->x - ball.x, abs(loc->y - ball.y)));//计算正弦
-			ball_status.a.x = ((ball.x - loc->x) > 0 ? 1 : -1) * (a_speed * cos_value) * strength;
-			ball_status.a.y = ((ball.y - loc->y) > 0 ? 1 : -1) * (a_speed * sin_value) * strength;
-		}
+		cos_value = cos_cal(abs(loc->x - ball.x), abs(loc->y - ball.y));//计算余弦
+		sin_value = sin_cal(abs(loc->x - ball.x), abs(loc->y - ball.y));//计算正弦
+		ball_status.a.x = ((ball.x - loc->x) > 0 ? 1 : -1) * (a_speed * cos_value) * strength;
+		ball_status.a.y = ((ball.y - loc->y) > 0 ? 1 : -1) * (a_speed * sin_value) * strength;
+
 		//获得初速度
 		ball_status.v.y = ball_status.a.y * 0.2;
 		ball_status.v.x = ball_status.a.x * 0.2;
 		//加速度取反，此后做匀减速运动
-		ball_status.a.x = - ball_status.a.x;
-		ball_status.a.y = - ball_status.a.y;
+		ball_status.a.x = ((ball.x - loc->x) > 0 ? -1 : 1) * (a_speed_ * cos_value);
 
+		ball_status.a.y = ((ball.y - loc->y) > 0 ? -1 : 1) * (a_speed_ * sin_value);
+		//printf("%lf %lf\n", cos_value, sin_value);
 		return 1;
 	}
 	//不能踢，返回0

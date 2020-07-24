@@ -1,1 +1,1 @@
-gcc server.c  ../common/common.c ../common/udp_epoll.c ../common/sub_reactor.c ../common/thread_pool.c ../common/game_ui.c ../common/heart_beat.c ../common/server_re_draw.c -I ../common/ -lpthread -lncurses
+gcc server.c  ../common/common.c ../common/udp_epoll.c ../common/sub_reactor.c ../common/thread_pool.c ../common/game_ui.c ../common/heart_beat.c ../common/server_re_draw.c ../common/ball_status.c -I ../common/ -lpthread -lncurses -lm

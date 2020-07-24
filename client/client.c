@@ -145,6 +145,7 @@ int main(int argc, char **argv){
             case 'k'://踢球
                 ctl_msg.type = FT_CTL;
                 ctl_msg.ctl.action = ACTION_KICK;
+				send(sockfd, (void *)&ctl_msg, sizeof(ctl_msg), 0);
                 break;
             case 'l'://带球
                 ctl_msg.type = FT_CTL;

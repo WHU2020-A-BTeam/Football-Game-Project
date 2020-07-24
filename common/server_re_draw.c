@@ -16,7 +16,7 @@ void re_draw_ball(){
     double v_y = ball_status.v.y;
     double time = 0.1;  
     double itime = 0.0;
-    while(1){
+    /*while(1){
         itime += 0.001;//间隔时间为0.001s
         if (itime == time){
             break;
@@ -24,12 +24,12 @@ void re_draw_ball(){
         v_x = v_x + a_x * 0.001;
         v_y = v_y + a_y * 0.001;
     
-        if (v_x<=0 && v_y<=0){
+        if (fabs(v_x) <= 1 && fabs(v_y - 0) <= 1){
             a_x = a_y = 0;
             v_x = v_y = 0;
             break;
         }
-        else if (v_x <= 0 && v_y > 0){
+        else if (fabs(v_x) <= 1 && v_y > 0){
             a_x = 0;
             v_x = 0;
         }
@@ -63,7 +63,61 @@ void re_draw_ball(){
             v_x = v_y = 0;
             break;
         }
-    }
+    }*/
+
+	v_x += a_x * 0.1;
+	v_y += a_y * 0.1;
+	//printf("%lf %lf\n", v_x, v_y);
+	double flag_x = v_x * ball_status.v.x;
+	double flag_y = v_y * ball_status.v.y;
+	if(flag_x <= 0 && flag_y <= 0){
+		v_x = 0;
+		v_y = 0;
+		a_x = 0;
+		a_y = 0;
+	}
+	else if(flag_x <= 0 && flag_y > 0.1){
+		v_x = 0;
+		a_x = 0;
+	}
+	else if(flag_x > 0.1 && flag_y <= 0){
+		v_y = 0;
+		a_x = 0;
+	}
+
+	ball.x += v_x * 0.1 - 0.5 * a_x * 0.01;
+
+	ball.y += v_y * 0.1 - 0.5 * a_y * 0.01;
+
+	if(ball.x > 1 || ball.y > 1){
+		//printf("%lf %lf", ball.x, ball.y);
+	}
+	if (ball.x > court.width){
+		//printf("sss\n");
+      	ball.x = court.width;
+      	a_x = a_y = 0;
+      	v_x = v_y = 0;
+       }
+    if (ball.x < 0){
+		//printf("sss\n");
+   		ball.x = 1;
+		a_x = a_y = 0;
+        v_x = v_y = 0;
+   	}
+	if (ball.y > court.heigth){
+		//printf("sss\n");
+      	ball.y = court.heigth;
+       	a_x = a_y = 0;
+       	v_x = v_y = 0;
+   	}
+    if (ball.y < 0){
+		//printf("sss\n");
+        ball.y = 1;
+       	a_x = a_y = 0;
+        v_x = v_y = 0;
+        }
+
+
     ball_status.a.x = a_x;
     ball_status.a.y = a_y;
     ball_status.v.x = v_x;
@@ -92,8 +146,8 @@ void re_draw_ball(){
 void re_draw_player(int team, char *name, struct Point *loc){
 
 	
-	w_gotoxy_putc(Football_t, pnt.x, pnt.y, ' ');
-	w_gotoxy_puts(Football_t, pnt.x, pnt.y + 1, "               ");  
+	w_gotoxy_putc(Football, pnt.x, pnt.y, ' ');
+	//w_gotoxy_puts(Football_t, pnt.x, pnt.y + 1, "               ");  
     if (!has_colors() || start_color() == ERR) {
         endwin();
         fprintf(stderr, "终端不支持颜色!\n");
@@ -116,13 +170,13 @@ void re_draw_player(int team, char *name, struct Point *loc){
 
 	if(team == 1){
 		wattron(Football, COLOR_PAIR(6));
-		w_gotoxy_putc(Football_t, loc->x, loc->y, 'K');
-		w_gotoxy_puts(Football_t, loc->x, loc->y + 1, name);
+		w_gotoxy_putc(Football, loc->x, loc->y, 'K');
+		//w_gotoxy_puts(Football_t, loc->x, loc->y + 1, name);
 	}
 	else{
 		wattron(Football, COLOR_PAIR(7));
-		w_gotoxy_putc(Football_t, loc->x, loc->y, 'K');
-		w_gotoxy_puts(Football_t, loc->x, loc->y + 1, name);
+		w_gotoxy_putc(Football, loc->x, loc->y, 'K');
+		//w_gotoxy_puts(Football_t, loc->x, loc->y + 1, name);
 	}
 
 }
