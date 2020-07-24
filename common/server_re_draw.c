@@ -8,12 +8,25 @@ extern struct Map court;
 
 struct Point pnt = {0,0};
 
+int force_to_stop(struct User *team, int x, int y){
+	for(int i = 0; i < MAX; i++){
+		if(team[i].online == 1){
+			if(x == team[i].loc.x && y == team[i].loc.y){
+				return 1;
+			}
+		}
+	}
+	return 0;
+}
+
 void re_draw_ball(){
     w_gotoxy_putc(Football, (int )ball.x, (int)ball.y, ' ');
     double a_x = ball_status.a.x;
     double a_y = ball_status.a.y;
     double v_x = ball_status.v.x;
     double v_y = ball_status.v.y;
+	double last_x = ball.x;
+	double last_y = ball.y;
     double time = 0.1;  
     double itime = 0.0;
     /*while(1){
@@ -64,59 +77,69 @@ void re_draw_ball(){
             break;
         }
     }*/
-
-	v_x += a_x * 0.1;
-	v_y += a_y * 0.1;
-	//printf("%lf %lf\n", v_x, v_y);
-	double flag_x = v_x * ball_status.v.x;
-	double flag_y = v_y * ball_status.v.y;
-	if(flag_x <= 0 && flag_y <= 0){
-		v_x = 0;
-		v_y = 0;
+	if((v_x == 0) && (v_y == 0)){
 		a_x = 0;
 		a_y = 0;
 	}
-	else if(flag_x <= 0 && flag_y > 0.1){
-		v_x = 0;
-		a_x = 0;
-	}
-	else if(flag_x > 0.1 && flag_y <= 0){
-		v_y = 0;
-		a_x = 0;
-	}
+	else{
+		v_x += a_x * 0.1;
+		v_y += a_y * 0.1;
+		//printf("%lf %lf\n", v_x, v_y);
+		double flag_x = v_x * ball_status.v.x;
+		double flag_y = v_y * ball_status.v.y;
+		if(flag_x <= 0 && flag_y <= 0){
+			v_x = 0;
+			v_y = 0;
+			a_x = 0;
+			a_y = 0;
+		}
+		else if(flag_x <= 0 && flag_y > 0.1){
+			v_x = 0;
+			a_x = 0;
+		}
+		else if(flag_x > 0.1 && flag_y <= 0){
+			v_y = 0;
+			a_x = 0;
+		}
+	
+		ball.x += v_x * 0.1 - 0.5 * a_x * 0.01;
 
-	ball.x += v_x * 0.1 - 0.5 * a_x * 0.01;
-
-	ball.y += v_y * 0.1 - 0.5 * a_y * 0.01;
-
-	if(ball.x > 1 || ball.y > 1){
-		//printf("%lf %lf", ball.x, ball.y);
-	}
-	if (ball.x > court.width){
-		//printf("sss\n");
-      	ball.x = court.width;
-      	a_x = a_y = 0;
-      	v_x = v_y = 0;
-       }
-    if (ball.x < 0){
-		//printf("sss\n");
-   		ball.x = 1;
-		a_x = a_y = 0;
-        v_x = v_y = 0;
-   	}
-	if (ball.y > court.heigth){
-		//printf("sss\n");
-      	ball.y = court.heigth;
-       	a_x = a_y = 0;
-       	v_x = v_y = 0;
-   	}
-    if (ball.y < 0){
-		//printf("sss\n");
-        ball.y = 1;
-       	a_x = a_y = 0;
-        v_x = v_y = 0;
+		ball.y += v_y * 0.1 - 0.5 * a_y * 0.01;
+	
+	
+		if(force_to_stop(rteam, ball.x, ball.y) == 1 || force_to_stop(bteam, ball.x, ball.y) == 1){
+			ball.x = last_x;
+			ball.y = last_y;
+			v_x = 0;
+			v_y = 0;
+			a_x = 0;
+			a_y = 0;
+		}
+		if (ball.x >= court.width){
+			//printf("sss\n");
+      		ball.x = court.width - 1;
+      		a_x = a_y = 0;
+      		v_x = v_y = 0;
+       	}
+    	if (ball.x <= 0){
+			//printf("sss\n");
+   			ball.x = 0;
+			a_x = a_y = 0;
+        	v_x = v_y = 0;
+   		}
+		if (ball.y >= court.heigth){
+			//printf("sss\n");
+      		ball.y = court.heigth - 1;
+       		a_x = a_y = 0;
+       		v_x = v_y = 0;
+   		}
+    	if (ball.y <= 0){
+			//printf("sss\n");
+        	ball.y = 0;
+       		a_x = a_y = 0;
+        	v_x = v_y = 0;
         }
-
+	}
 
     ball_status.a.x = a_x;
     ball_status.a.y = a_y;
@@ -190,6 +213,9 @@ void re_draw_team(struct User *team){
 }
 
 void re_draw(int m){
+	
+
+
 	re_draw_ball();
 	re_draw_team(rteam);
 	re_draw_team(bteam);

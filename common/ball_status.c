@@ -14,8 +14,11 @@ int can_kick(struct Point *loc, int strength){
 	const double a_speed = 40.0;
 	const double a_speed_ = 10.0;
 	double cos_value, sin_value;
-	//if(loc->x == ball.x || loc->y == ball.y){
+	if(loc->x == ball.x && loc->y == ball.y){
+		return 0;
+	}
 	if(abs(loc->x - ball.x) <= 2 && abs(loc->y - ball.y) <= 2){
+		bzero(&ball_status, sizeof(ball_status));
 		cos_value = cos_cal(abs(loc->x - ball.x), abs(loc->y - ball.y));//计算余弦
 		sin_value = sin_cal(abs(loc->x - ball.x), abs(loc->y - ball.y));//计算正弦
 		ball_status.a.x = ((ball.x - loc->x) > 0 ? 1 : -1) * (a_speed * cos_value) * strength;
