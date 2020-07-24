@@ -103,8 +103,9 @@ int main(int argc, char **argv){
     connect(sockfd, (struct sockaddr *)&server, len);
 	pthread_create(&heart_t, NULL, heart_beat_client, &sockfd);
     
-    bzero(&ctl_msg, sizeof(ctl_msg));
+    //bzero(&ctl_msg, sizeof(ctl_msg));
     while(1){
+		bzero(&ctl_msg, sizeof(ctl_msg));
         int c = getch();
         switch (c){
             case 'a': 
@@ -152,11 +153,25 @@ int main(int argc, char **argv){
                 ctl_msg.ctl.action = ACTION_CARRY;
 				send(sockfd, (void *)&ctl_msg, sizeof(ctl_msg), 0);
                 break;
+			case 'e'://停球
+				ctl_msg.type = FT_CTL;
+				ctl_msg.ctl.action = ACTION_STOP;
+				send(sockfd, (void *)&ctl_msg, sizeof(ctl_msg), 0);
+				break;
+			case 'q':
+				ctl_msg.type = FT_FIN;
+				send(sockfd, (void *)&ctl_msg, sizeof(ctl_msg), 0);
+				break;
+			case '\n':
+				ctl_msg.type = FT_WALL;
+				send(sockfd, (void *)&ctl_msg, sizeof(ctl_msg), 0);
+				break;
             case 'n'://显示姓名
+
                 break;
-            case '\n'://回车：打开输入框
+            //case '\n'://回车：打开输入框
             //    send_chat();
-                break;
+              //  break;
             default:
                 break;
         }
