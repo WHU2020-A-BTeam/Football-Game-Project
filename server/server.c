@@ -8,9 +8,9 @@ pthread_mutex_t bmutex = PTHREAD_MUTEX_INITIALIZER;
 pthread_mutex_t rmutex = PTHREAD_MUTEX_INITIALIZER;
 char data_stream[20];
 char talk[5][50];
- struct Point op;
- struct Bpoint ball;
-
+struct Point op;
+struct Bpoint ball;
+struct Score score;
 extern struct BallStatus ball_status;
 int main(int argc, char **argv){
 	//printf("yes\n");

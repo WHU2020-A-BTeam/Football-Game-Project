@@ -4,6 +4,7 @@
 	> Mail: 
 	> Created Time: Thu 23 Jul 2020 10:16:05 AM CST
  ************************************************************************/
+
 #include "head.h"
 extern struct Point op;
 extern struct Bpoint ball;
@@ -74,4 +75,36 @@ int can_carry(struct Point *loc) {
         return 0;
 
 }
+int can_stop(struct Point *loc) {
+        ball.x = (double)(int)ball.x;
+        ball.y = (double)(int)ball.y;
+        int locx = loc->x - 2;
+        int locy = loc->y - 1;
+    if (locx == ball.x && locy == ball.y) {
+                return 0;
+            
+    }
+    if (abs(locx - ball.x) <= 2 && abs(locy - ball.y) <= 2) {
+        if (ball_status.if_carry == 1) {
+                        srand(time(NULL));
+                        int i = rand() % 3;
+            if (i == 0 || i == 1) {
+                                ball_status.if_carry = 0;
+                            
+            }
+            else {
+                                return 0;
+                            
+            }
+                    
+        }
+                ball_status.a.x = 0;
+                ball_status.a.y = 0;
+                ball_status.v.x = 0;
+                ball_status.v.y = 0;
+                return 1;
+            
+    }
+        return 0;
 
+}

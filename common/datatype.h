@@ -26,7 +26,10 @@
 #define ACTION_LOGIN 0x10
 #define ACTION_EXIT 0x20
 
-
+struct Score {
+    int red;
+    int blue;
+};
 struct Point {
     int x;
     int y;

@@ -11,11 +11,12 @@ extern WINDOW *Help;
 extern struct Map court;
 
 void show_data_stream(int type){
-    for(int i=2;i<20;i++){
+    for(int i=19;i>1;i--){
         data_stream[i] = data_stream[i-1];
     }
     data_stream[1] = type;
     for(int i=1; i<19 ;i++){
+        type = data_stream[i];
         if(type =='l'){
             //char blank[]="zzq";
              wattron(Help, COLOR_PAIR(8));//login

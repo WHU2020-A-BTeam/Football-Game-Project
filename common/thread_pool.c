@@ -25,6 +25,7 @@ void do_with(struct User *user) {
     recv(user->fd, (void*)&msg, sizeof(msg), 0);
    // printf("%d\n",msg.type);
     if (msg.type & FT_FIN){
+        show_data_stream('e');
        if(msg.team == 0){
         int num =find(rteam,msg.name);
         rteam[num].online = 0;
@@ -44,9 +45,8 @@ void do_with(struct User *user) {
     }else if(msg.type & FT_ACK){
         
     }else if(msg.type & FT_CTL){
-
         if(msg.ctl.action & ACTION_DFL)
-        {
+        {   show_data_stream('n');
         struct User * team=NULL;
         if(msg.team == 0) team=rteam;
         else team =bteam;
@@ -68,7 +68,7 @@ void do_with(struct User *user) {
             }
         }
 
-        else if (msg.ctl.action & ACTION_KICK){
+        else if (msg.ctl.action & ACTION_KICK){ show_data_stream('k');
                             int ret = can_kick(&(user->loc), 1);
             if(ret == 1){
                                     ball_status.by_team = user->team;
@@ -77,14 +77,19 @@ void do_with(struct User *user) {
                                 
                         }
            }
-        else if (msg.ctl.action & ACTION_CARRY){
+        else if (msg.ctl.action & ACTION_CARRY){ show_data_stream('c');
                             int ret = can_carry(&(user->loc));
             if(ret == 1){
                                     strcpy(ball_status.name, user->name);
                                     w_gotoxy_puts(Message, 0, 2, ball_status.name);
-                                
+                                 ball_status.by_team = user->team; 
                       }
             }
+        else if (msg.ctl.action & ACTION_STOP){
+                            int ret = can_stop(&(user->loc));
+                            //printf("stop!\n");
+            //            
+        }
          }
     else if(msg.type & FT_MSG){
 //        printf("ttttt\n");

@@ -70,6 +70,7 @@ void initfootball() {
     init_pair(10, COLOR_BLACK, COLOR_RED);
     init_pair(11, COLOR_BLACK, COLOR_BLUE);
     init_pair(12, COLOR_BLACK, COLOR_YELLOW);
+    init_pair(13, COLOR_BLACK, COLOR_BLACK);
     Football_t = create_newwin(court.width + 4, court.heigth + 2, court.start.x - 2, court.start.y - 1);
     //Football = create_newwin(court.width + 4, court.heigth + 4, court.start.x - 2, court.start.y - 2);
     Football = subwin(Football_t, court.heigth, court.width, court.start.x, court.start.y);
@@ -81,5 +82,6 @@ void initfootball() {
     Write = create_newwin(court.width + 4 + 20, 5,  court.start.x - 2, court.start.y + 1 + court.heigth + 7);
     box(Write, 0, 0);
     wattron(Football, COLOR_PAIR(6));
+    ball.x+=5;ball.y+=5;
     w_gotoxy_putc(Football, ball.x, ball.y, 'o');
 }
