@@ -53,13 +53,13 @@ int can_kick(struct Point *loc, int strength){
 }
 
 int can_carry(struct Point *loc){
-	/*if(ball_status.if_carry == 1){
+	if(ball_status.if_carry == 1){
 		srand(time(NULL));
 		int i = rand() % 3;
 		if(i == 2){
 			return 0;
 		}
-	}*/
+	}
 	ball.x = (double)(int)ball.x;
 	ball.y = (double)(int)ball.y;
 	int locx = loc->x - 2;
@@ -85,7 +85,7 @@ int can_stop(struct Point *loc){
 		return 0;
 	}
 	if(abs(locx - ball.x) <= 2 && abs(locy - ball.y) <= 2){
-		/*if(ball_status.if_carry == 1){
+		if(ball_status.if_carry == 1){
 			srand(time(NULL));
 			int i = rand() % 3;
 			if(i == 0 || i == 1){
@@ -94,7 +94,7 @@ int can_stop(struct Point *loc){
 			else{
 				return 0;
 			}
-		}*/
+		}
 		ball_status.a.x = 0;
 		ball_status.a.y = 0;
 		ball_status.v.x = 0;
