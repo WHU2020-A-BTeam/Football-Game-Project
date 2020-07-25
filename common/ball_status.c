@@ -26,32 +26,34 @@ int can_kick(struct Point *loc, int strength) {
         const double a_speed_ = 10.0;
         double cos_value, sin_value;
         char buff[512] = { 0  };
-    if (loc->x == ball.x && loc->y == ball.y) {
+        int locx = loc->x - 2;
+        int locy = loc->y - 1;
+    if (locx == ball.x && locy == ball.y) {
                 return 0;
             
     }
         ball.x = (double)(int)ball.x;
         ball.y = (double)(int)ball.y;
-    if (abs(loc->x - ball.x) <= 2 && abs(loc->y - ball.y) <= 2) {
+    if (abs(locx - ball.x) <= 2 && abs(locy - ball.y) <= 2) {
             
                 bzero(&ball_status, sizeof(ball_status));
-        if (loc->x == ball.x && loc->y == ball.y) {
+        if (locx == ball.x && locy == ball.y) {
                         return 0;
                     
         }
-                cos_value = cos_cal(abs(loc->x - ball.x), abs(loc->y - ball.y));
-                sin_value = sin_cal(abs(loc->x - ball.x), abs(loc->y - ball.y));
-                ball_status.a.x = ((ball.x - loc->x) > 0 ? 1 : -1) * (a_speed * cos_value) * strength;
-                ball_status.a.y = ((ball.y - loc->y) > 0 ? 1 : -1) * (a_speed * sin_value) * strength;
+                cos_value = cos_cal(abs(locx - ball.x), abs(locy - ball.y));
+                sin_value = sin_cal(abs(locx - ball.x), abs(locy - ball.y));
+                ball_status.a.x = ((ball.x - locx) > 0 ? 1 : -1) * (a_speed * cos_value) * strength;
+                ball_status.a.y = ((ball.y - locy) > 0 ? 1 : -1) * (a_speed * sin_value) * strength;
 
                 
                 ball_status.v.y = ball_status.a.y * 0.2;
                 ball_status.v.x = ball_status.a.x * 0.2;
                 
-                ball_status.a.x = ((ball.x - loc->x) > 0 ? -1 : 1) * (a_speed_ * cos_value);
+                ball_status.a.x = ((ball.x - locx) > 0 ? -1 : 1) * (a_speed_ * cos_value);
 
-                ball_status.a.y = ((ball.y - loc->y) > 0 ? -1 : 1) * (a_speed_ * sin_value);
-                sprintf(buff, "loc : %d %d ball %lf %lf apeed : %lf %lf", loc->x, loc->y, ball.x, ball.y, ball_status.a.x, ball_status.a.y);
+                ball_status.a.y = ((ball.y - locy) > 0 ? -1 : 1) * (a_speed_ * sin_value);
+                sprintf(buff, "loc : %d %d ball %lf %lf apeed : %lf %lf", locx, locy, ball.x, ball.y, ball_status.a.x, ball_status.a.y);
                 w_gotoxy_puts(Message, 0, 0, buff);
 
                 return 1;
@@ -65,9 +67,12 @@ int can_kick(struct Point *loc, int strength) {
 int can_carry(struct Point *loc) {
         ball.x = (double)(int)ball.x;
         ball.y = (double)(int)ball.y;
-    if (abs(loc->x - ball.x) <= 2 && abs(loc->y - ball.y) <= 2) {
-                op.x = loc->x - ball.x;
-                op.y = loc->y - ball.y;
+        int locx = loc->x - 2;
+        int locy = loc->y - 1;
+
+    if (abs(locx - ball.x) <= 2 && abs(locy - ball.y) <= 2) {
+                op.x = locx - ball.x;
+                op.y = locy - ball.y;
                 ball_status.if_carry = 1;
                 return 1;
             

@@ -75,7 +75,7 @@
                 v_y += a_y * 0.1;
 
                // sprintf(buff, "speed : %lf %lf aspeed : %lf %lf name : %s", v_x, v_y, a_x, a_y, ball_status.name);
-                w_gotoxy_puts(Message, 0, 1, buff);
+                //w_gotoxy_puts(Message, 0, 1, buff);
                 double flag_x = v_x * ball_status.v.x;
                 double flag_y = v_y * ball_status.v.y;
          if (flag_x <= 0 && flag_y <= 0) {
@@ -101,20 +101,9 @@
 
                 ball.y += v_y * 0.1 - 0.5 * a_y * 0.01;
 
-         if (ball.x >= court.width) {
-                
-                        ball.x = court.width - 1;
-                        a_x = a_y = 0;
-                        v_x = v_y = 0;
                     
-         }
-         if (ball.x <= 0) {
-                
-                        ball.x = 0;
-                        a_x = a_y = 0;
-                        v_x = v_y = 0;
+         
                     
-         }
          if (ball.y >= court.heigth) {
                         ball.y = court.heigth - 1;
                         a_x = a_y = 0;
@@ -167,7 +156,7 @@
                         sprintf(msg.msg, "%s of %s team, get 1 score", ball_status.name, ball_status.by_team ? "blue" : "red");
                         w_gotoxy_puts(Message, 0, 2, msg.msg);
                     
-                            werase(Help);
+             werase(Help);
                             wattron(Help,COLOR_PAIR(3));
                             box(Help,0,0);
                             char scores[20];
@@ -276,6 +265,7 @@
      
         werase(Football_t);
         box(Football_t, 0, 0);
+        box(Football, 0, 0);
         re_drew_team(rteam, 0);
         re_drew_team(bteam, 1);
         re_drew_ball();

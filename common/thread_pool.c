@@ -41,6 +41,7 @@ void do_with(struct User *user) {
         }
     }
      else if(msg.type & FT_WALL){
+         user->flag = 10;
 
     }else if(msg.type & FT_ACK){
         
@@ -81,7 +82,7 @@ void do_with(struct User *user) {
                             int ret = can_carry(&(user->loc));
             if(ret == 1){
                                     strcpy(ball_status.name, user->name);
-                                    w_gotoxy_puts(Message, 0, 2, ball_status.name);
+                                    //w_gotoxy_puts(Message, 0, 2, ball_status.name);
                                  ball_status.by_team = user->team; 
                       }
             }
