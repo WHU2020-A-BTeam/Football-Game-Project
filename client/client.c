@@ -1,4 +1,11 @@
-#include "../common/head.h"
+/*************************************************************************
+	> File Name: client.c
+	> Author: 
+	> Mail: 
+	> Created Time: Sat 25 Jul 2020 11:06:01 PM CST
+ ************************************************************************/
+
+#include "head.h"
 struct Map court;
 struct Bpoint ball;
 pthread_mutex_t bmutex, rmutex;
@@ -7,19 +14,14 @@ char server_ip[20] = {0};
 int team = -1;
 char *conf = "./football.conf";
 int sockfd = -1;
-struct FootballMsg ctl_msg;
-
-
+struct FootBallMsg ctl_msg;
+struct FootBallMsg chat_msg;
+struct LogRequest request;
 int main(int argc, char **argv){
-    initscr();
 	int opt;
-	pthread_t heart_t;
-	struct LogRequest request;
 	struct LogResponse response;
 	bzero(&request, sizeof(request));
 	bzero(&response, sizeof(response));
-    noecho();
-    cbreak();
 	while((opt = getopt(argc, argv, "h:p:t:m:n:")) != -1){
 		switch (opt) {
 			case 't':
@@ -48,23 +50,22 @@ int main(int argc, char **argv){
 	if (!strlen(server_ip)) strcpy(server_ip, get_conf_value(conf, "SERVERIP"));
 	if (!strlen(request.name)) strcpy(request.name, get_conf_value(conf, "NAME"));
 	if (!strlen(request.msg)) strcpy(request.msg, get_conf_value(conf, "LOGMSG"));
-	court.width = atoi(get_conf_value(conf, "COLS"));
+	
+    court.width = atoi(get_conf_value(conf, "COLS"));
 	court.heigth = atoi(get_conf_value(conf, "LINES"));
-	court.start.x = (court.width + 1) / 2;
-	court.start.y = (court.heigth + 1) / 2;
+	court.start.x = 3 ;
+	court.start.y = 3;
 	court.gate_width = 5;
 	court.gate_heigth = 10;
+
+
 //	printf("PORT:%d \nTEAM:%d \nIP:%s\n NAME:%s\nLOGMSG:%s\n", server_port, request.team, server_ip, request.name, request.msg);
-    
-    
-    struct sockaddr_in server;
+	struct sockaddr_in server;
 	server.sin_family = AF_INET;
 	server.sin_port = htons(server_port);
 	server.sin_addr.s_addr = inet_addr(server_ip);
 
 	socklen_t len = sizeof(server);
-	
-	//initfootball();
 
 	if((sockfd = socket_udp()) < 0){
 		perror("socket_udp()");
@@ -72,15 +73,13 @@ int main(int argc, char **argv){
 	}
 	
 	sendto(sockfd, (void *)&request, sizeof(request), 0, (struct sockaddr *)&server, len);
-	printf("send success!\n");
+//	printf("send success!\n");
 	fd_set set;
 	FD_ZERO(&set);
 	FD_SET(sockfd, &set);
-
 	struct timeval tv;
 	tv.tv_sec = 5;
 	tv.tv_usec = 0;
-
 	int retval = select(sockfd + 1, &set, NULL, NULL, &tv);
 	if(retval < 0) {
 		perror("select()");
@@ -89,76 +88,88 @@ int main(int argc, char **argv){
 	else if (retval){
 		int ret = recvfrom(sockfd, (void *)&response, sizeof(response), 0, (struct sockaddr *)&server, &len);
 		if(ret != sizeof(response)){
-			printf("The Game Server refused your login.\n\tThis May be helpful:%s\n", request.msg);
+	//		printf("The Game Server refused your login.\n\tThis May be helpful:%s\n", request.msg);
 			exit(1);
 		}
 	}
 	if (retval == 0) {
-		printf("The Game Server is out of service!.\n");
+	//	printf("The Game Server is out of service!.\n");
 		exit(1);
 	}
-	printf("Server : %s\n", response.msg);
-	
+	//printf("Server : %s\n", response.msg);
+	connect(sockfd, (struct sockaddr *)&server, len);
     
-    connect(sockfd, (struct sockaddr *)&server, len);
-	pthread_create(&heart_t, NULL, heart_beat_client, &sockfd);
-    
-    bzero(&ctl_msg, sizeof(ctl_msg));
-    while(1){
-        int c = getch();
-        switch (c){
-            case 'a': 
-                ctl_msg.type = FT_CTL;
-                ctl_msg.ctl.action = ACTION_DFL;
-                ctl_msg.ctl.dirx = -1; 
-                ctl_msg.ctl.diry = 0;
-                send_ctl();
-                break;
-            case 'd': 
-                ctl_msg.type = FT_CTL; 
-                ctl_msg.ctl.action = ACTION_DFL;
-                ctl_msg.ctl.dirx = 1; 
-                ctl_msg.ctl.diry = 0;
-                send_ctl();
-                break;
-            case 's': 
-                ctl_msg.type = FT_CTL; 
-                ctl_msg.ctl.action = ACTION_DFL;
-                ctl_msg.ctl.dirx = 0; 
-                ctl_msg.ctl.diry = 1;
-                send_ctl();
-                break;
-            case 'w': 
-                ctl_msg.type = FT_CTL; 
-                ctl_msg.ctl.action = ACTION_DFL;
-                ctl_msg.ctl.dirx = 0; 
-                ctl_msg.ctl.diry = -1;
-                send_ctl();
-                break;
-            case ' '://空格：力度条
-                break;
-            case 'j'://停球
-                ctl_msg.type = FT_CTL;
-                ctl_msg.ctl.action = ACTION_STOP;
-            //
-                break;
-            case 'k'://踢球
-                ctl_msg.type = FT_CTL;
-                ctl_msg.ctl.action = ACTION_KICK;
-                break;
-            case 'l'://带球
-                ctl_msg.type = FT_CTL;
-                ctl_msg.ctl.action = ACTION_CARRY;
-                break;
-            case 'n'://显示姓名
-                break;
-            case '\n'://回车：打开输入框
-            //    send_chat();
-                break;
-            default:
-                break;
+    pthread_t client;
+    pthread_create(&client,NULL,client_recv,NULL);
+
+
+    signal(SIGALRM,send_ctl);
+    struct itimerval itimer;
+    itimer.it_interval.tv_sec = 0;
+    itimer.it_interval.tv_usec = 100000;
+    itimer.it_value.tv_sec = 3;
+    itimer.it_value.tv_usec = 0;
+    setitimer(ITIMER_REAL,&itimer,NULL);
+
+    signal(SIGINT,client_exit);
+
+    //struct FootBallMsg ack;
+    //ack.type =FT_ACK;
+    //send(sockfd,(void*)&ack,sizeof(ack),0);
+
+
+	initfootball();
+    noecho();
+    cbreak();
+    keypad(stdscr,TRUE);
+    //curs_set(0);
+	while(1){
+	/*	char buff[512] = {0};
+		scanf("%[^\n]s", buff);
+		getchar();
+		send(sockfd, buff, strlen(buff), 0);
+		printf("Send : %s\n" , buff);
+		bzero(buff, sizeof(buff));
+		recv(sockfd, buff, sizeof(buff), 0);
+		printf("Server : %s\n", buff);*/
+        char ch = wgetch(Football);
+        w_gotoxy_putc(Football,7,7,ch);
+        if(ch =='w'||ch=='s'||ch=='a'||ch=='d')
+        {   strcpy(ctl_msg.name,request.name);
+            //printf("%s\n",ctl_msg.name);
+            ctl_msg.team = request.team;
+            ctl_msg.type = FT_CTL;
+            ctl_msg.ctl.action =ACTION_DFL;
+            if(ch=='w'||ch=='s'){
+            ctl_msg.ctl.diry = ch;
+            }
+            else if(ch =='a'|| ch=='d'){
+                ctl_msg.ctl.dirx = ch;
+            }
+        } 
+       else if(ch == 10){
+           send_chat();
         }
+        
+        else if(ch =='k'){
+                            ctl_msg.type = FT_CTL;
+                            ctl_msg.ctl.action = ACTION_KICK;
+                            send(sockfd, (void *)&ctl_msg, sizeof(ctl_msg), 0);
+        }
+        else if(ch =='l'){
+                            ctl_msg.type = FT_CTL;
+                            ctl_msg.ctl.action = ACTION_CARRY;
+                            send(sockfd, (void *)&ctl_msg, sizeof(ctl_msg), 0);
+                         //   break;
+        }
+        //refresh();
+        else if(ch =='j'){
+                            ctl_msg.type = FT_CTL;
+                            ctl_msg.ctl.action = ACTION_STOP;
+                            send(sockfd, (void *)&ctl_msg, sizeof(ctl_msg), 0);
+                         //   break;
+        }
+        //printw("%c",ch);
 	}
-    endwin();
 	return 0;
 }

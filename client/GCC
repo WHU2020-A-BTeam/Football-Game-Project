@@ -1,1 +1,2 @@
-gcc client.c ../common/common.c ../common/udp_epoll.c ../common/sub_reactor.c ../common/thread_pool.c ../common/game_ui.c ../common/heart_beat_client.c ../common/send_ctl.c -I ../common/ -lpthread -lncurses
+gcc client.c ../common/common.c    ../common/client_exit.c ../common/client_recv.c  ../common/send_ctl.c ../common/send_chat.c   ../common/game_ui.c -I ../common/ -lpthread -lncurses
+
