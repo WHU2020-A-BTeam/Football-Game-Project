@@ -116,6 +116,16 @@
                 v_x = v_y = 0;
             
  }
+ 		if(ball.x <= 0){
+			ball.x = 0;
+			a_x = a_y = 0;
+			v_x = v_y = 0;
+		}
+		if(ball.x >= court.width) {
+			ball.x = court.width - 1;
+			a_x = a_y = 0;
+			v_x = v_y = 0;
+		}
     
      }
      if (ball.x >= court.width - 0.001) {
